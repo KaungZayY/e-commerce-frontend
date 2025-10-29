@@ -1,13 +1,15 @@
 <template>
     <button :disabled="loading" @click="emit('click')" :class="[
-        'text-white py-2 px-4 rounded-md disabled:opacity-70 flex items-center justify-center gap-2 w-full transition-colors duration-200',
-        variantClass
+        'flex items-center justify-center gap-2 rounded-md transition-colors duration-200 disabled:opacity-70',
+        sizeClass,
+        variantClass,
+        label ? 'w-full px-4 py-2 text-white' : 'p-2' // compact style if no label
     ]">
-        <!-- Icon (if not loading) -->
+        <!-- Icon (if available and not loading) -->
         <i v-if="icon && !loading" :class="['pi', `pi-${icon}`, 'text-white']"></i>
 
-        <!-- Label -->
-        <span class="flex-1 text-center">
+        <!-- Label (if present) -->
+        <span v-if="label" class="flex-1 text-center">
             {{ loading ? loadingLabel : label }}
         </span>
     </button>
@@ -17,24 +19,39 @@
 import { computed } from 'vue'
 
 const props = defineProps<{
-    label: string
-    loadingLabel: string
+    label?: string
+    loadingLabel?: string
     loading?: boolean
     icon?: string
-    variant?: 'primary' | 'danger' // semantic style
+    variant?: 'primary' | 'danger' | 'neutral'
+    size?: 'sm' | 'md' | 'lg'
 }>()
 
 const emit = defineEmits<{
     (e: 'click'): void
 }>()
 
-// Computed class for variant
+// Computed class for color variant
 const variantClass = computed(() => {
     switch (props.variant) {
         case 'danger':
-            return 'bg-red-600 hover:bg-red-700'
+            return 'bg-red-600 hover:bg-red-700 text-white'
+        case 'neutral':
+            return 'bg-gray-500 hover:bg-gray-600 text-white'
         default:
-            return 'bg-blue-600 hover:bg-blue-700'
+            return 'bg-blue-600 hover:bg-blue-700 text-white'
+    }
+})
+
+// Computed class for size
+const sizeClass = computed(() => {
+    switch (props.size) {
+        case 'sm':
+            return 'text-sm'
+        case 'lg':
+            return 'text-lg'
+        default:
+            return 'text-base'
     }
 })
 </script>

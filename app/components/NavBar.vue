@@ -198,7 +198,8 @@
 
                 <!-- Desktop: right side icons and auth -->
                 <div class="hidden lg:flex gap-2 shrink-0 items-center">
-                    <NuxtLink to="/login"
+                    <!-- Un Auth User Login-->
+                    <NuxtLink to="/login" v-if="user_role == null"
                         class="text-black font-semibold px-3 py-2 text-sm hover:text-blue-700 hover:underline whitespace-nowrap">
                         Login/Register</NuxtLink>
                     <NuxtLink to="/search" class="text-black p-2 hover:text-blue-700"><i
@@ -217,17 +218,19 @@
                         <div v-if="desktopDropdown === 'profile'"
                             class="absolute z-20 right-0 mt-2 w-48 bg-white rounded-md shadow-lg border border-blue-100"
                             @mouseleave="desktopDropdown = ''">
-                            <NuxtLink to="/profile"
+                            <!-- Auth User Access -->
+                            <NuxtLink to="/profile" v-if="user_role !== null"
                                 :class="[isRoute('/profile') ? 'text-blue-600' : 'text-black', 'font-semibold block px-4 py-2 text-sm hover:bg-blue-50 border-b border-gray-200']">
                                 Profile
                             </NuxtLink>
-                            <NuxtLink to="/products"
+                            <!-- Admin Access-->
+                            <NuxtLink to="/products" v-if="user_role == 1"
                                 :class="[isRoute('/products') ? 'text-blue-600' : 'text-black', 'font-semibold block px-4 py-2 text-sm hover:bg-blue-50 border-b border-gray-200']">
                                 Products
                             </NuxtLink>
                             <div class="p-2">
                                 <LoadingBtn label="Logout" loadingLabel="Logging out..." :loading="loggingOut"
-                                    icon="sign-out" @click="handleLogout" variant="danger"/>
+                                    icon="sign-out" @click="handleLogout" variant="danger" />
                             </div>
                         </div>
                     </div>
@@ -330,6 +333,13 @@ function setDesktopDropdown(key) {
     desktopDropdown.value = desktopDropdown.value === key ? '' : key;
 }
 
+const user_role = computed(() => {
+    if (process.client) {
+        return localStorage.getItem('user_role') || ''
+    }
+    return ''
+})
+
 // Logout functionality
 const loggingOut = ref(false);
 const handleLogout = async () => {
@@ -340,6 +350,7 @@ const handleLogout = async () => {
         });
         localStorage.removeItem('token');
         localStorage.removeItem('user_name');
+        localStorage.removeItem('user_role');
         toast.success('Logout Successful!.')
         router.push('/auth/login');
     } catch (error) {
