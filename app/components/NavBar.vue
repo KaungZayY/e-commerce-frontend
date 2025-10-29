@@ -211,22 +211,22 @@
                     </NuxtLink>
 
                     <!-- Profile Dropdown -->
-                    <div class="relative">
+                    <div class="relative" v-if="user_role !== null">
                         <button @click="setDesktopDropdown('profile')" class="text-black p-2 hover:text-blue-700">
                             <i class="pi pi-user text-xl"></i>
                         </button>
                         <div v-if="desktopDropdown === 'profile'"
                             class="absolute z-20 right-0 mt-2 w-48 bg-white rounded-md shadow-lg border border-blue-100"
                             @mouseleave="desktopDropdown = ''">
-                            <!-- Auth User Access -->
-                            <NuxtLink to="/profile" v-if="user_role !== null"
-                                :class="[isRoute('/profile') ? 'text-blue-600' : 'text-black', 'font-semibold block px-4 py-2 text-sm hover:bg-blue-50 border-b border-gray-200']">
-                                Profile
+                            <!-- Customer Orders -->
+                            <NuxtLink to="/purchases" v-if="user_role == 2"
+                                :class="[isRoute('/purchases') ? 'text-blue-600' : 'text-black', 'font-semibold block px-4 py-2 text-sm hover:bg-blue-50 border-b border-gray-200']">
+                                My Purchases
                             </NuxtLink>
                             <!-- Admin Access-->
-                            <NuxtLink to="/products" v-if="user_role == 1"
-                                :class="[isRoute('/products') ? 'text-blue-600' : 'text-black', 'font-semibold block px-4 py-2 text-sm hover:bg-blue-50 border-b border-gray-200']">
-                                Products
+                            <NuxtLink to="/dashboard" v-if="user_role == 1"
+                                :class="[isRoute('/dashboard') ? 'text-blue-600' : 'text-black', 'font-semibold block px-4 py-2 text-sm hover:bg-blue-50 border-b border-gray-200']">
+                                Admin Pannel
                             </NuxtLink>
                             <div class="p-2">
                                 <LoadingBtn label="Logout" loadingLabel="Logging out..." :loading="loggingOut"

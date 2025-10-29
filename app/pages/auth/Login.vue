@@ -52,13 +52,14 @@ const handleLogin = async () => {
             method: 'POST',
             body: payload,
         })
-        console.log(response)
+        // console.log(response)
         localStorage.setItem('token', response.token);
         localStorage.setItem('user_name', response.user.name);
         localStorage.setItem('user_role', response.user.user_role_id);
         toast.success('Login Successful!')
         router.push('/');
     } catch (error) {
+        // console.log(error)
         if (error.statusCode === 422 && error.data?.errors) {
             errors.value = error.data.errors;
             // console.log(errors.value)
