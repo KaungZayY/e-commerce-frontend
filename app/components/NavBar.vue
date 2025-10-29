@@ -208,8 +208,29 @@
                     <NuxtLink to="/cart" class="text-black p-2 hover:text-blue-700"><i
                             class="pi pi-shopping-cart text-xl"></i>
                     </NuxtLink>
-                    <NuxtLink to="/profile" class="text-black p-2 hover:text-blue-700"><i
-                            class="pi pi-user text-xl"></i></NuxtLink>
+
+                    <!-- Profile Dropdown -->
+                    <div class="relative">
+                        <button @click="setDesktopDropdown('profile')" class="text-black p-2 hover:text-blue-700">
+                            <i class="pi pi-user text-xl"></i>
+                        </button>
+                        <div v-if="desktopDropdown === 'profile'"
+                            class="absolute z-20 right-0 mt-2 w-48 bg-white rounded-md shadow-lg border border-blue-100"
+                            @mouseleave="desktopDropdown = ''">
+                            <NuxtLink to="/profile"
+                                :class="[isRoute('/profile') ? 'text-blue-600' : 'text-black', 'font-semibold block px-4 py-2 text-sm hover:bg-blue-50 border-b border-gray-200']">
+                                Profile
+                            </NuxtLink>
+                            <NuxtLink to="/products"
+                                :class="[isRoute('/products') ? 'text-blue-600' : 'text-black', 'font-semibold block px-4 py-2 text-sm hover:bg-blue-50 border-b border-gray-200']">
+                                Products
+                            </NuxtLink>
+                            <div class="p-2">
+                                <LoadingBtn label="Logout" loadingLabel="Logging out..." :loading="loggingOut"
+                                    icon="sign-out" @click="handleLogout" variant="danger"/>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Mobile menu button-->
@@ -270,9 +291,20 @@
                     <NuxtLink to="/cart" class="text-black p-2 hover:text-blue-700"><i
                             class="pi pi-shopping-cart text-lg"></i>
                     </NuxtLink>
-                    <NuxtLink to="/profile" class="text-black p-2 hover:text-blue-700"><i
-                            class="pi pi-user text-lg"></i>
+                </div>
+
+                <!-- Mobile Profile Section -->
+                <div class="px-3 py-2 border-t border-gray-200 mt-2">
+                    <NuxtLink to="/profile" class="text-black font-semibold block py-2 hover:text-blue-700">
+                        Profile
                     </NuxtLink>
+                    <NuxtLink to="/products" class="text-black font-semibold block py-2 hover:text-blue-700">
+                        Products
+                    </NuxtLink>
+                    <div class="mt-2">
+                        <LoadingBtn label="Logout" loadingLabel="Logging out..." :loading="loggingOut" icon="sign-out"
+                            @click="handleLogout" />
+                    </div>
                 </div>
             </div>
         </div>
@@ -280,8 +312,7 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
-import { useRoute } from 'vue-router';
+import { toast } from 'vue-sonner'
 
 // For mobile item dropdowns
 const mobileOpen = ref(false);
@@ -292,11 +323,33 @@ function setMobileDropdown(key) {
 
 // Desktop dropdowns
 const route = useRoute();
+const router = useRouter();
 const desktopDropdown = ref('');
 
 function setDesktopDropdown(key) {
     desktopDropdown.value = desktopDropdown.value === key ? '' : key;
 }
+
+// Logout functionality
+const loggingOut = ref(false);
+const handleLogout = async () => {
+    loggingOut.value = true;
+    try {
+        await useApi('/logout', {
+            method: 'POST'
+        });
+        localStorage.removeItem('token');
+        localStorage.removeItem('user_name');
+        toast.success('Logout Successful!.')
+        router.push('/auth/login');
+    } catch (error) {
+        console.log(error)
+        toast.error('Logout Failed!.')
+    } finally {
+        loggingOut.value = false;
+        desktopDropdown.value = '';
+    }
+};
 
 const isRoute = (comparison) => route.path === comparison;
 const isActiveHome = computed(() => route.path === '/');
