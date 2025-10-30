@@ -4,8 +4,8 @@
         <Spinner v-if="loading" />
         <DataTable v-show="!loading" :data="data" :columns="columns" :totalItems="totalItems"
             :currentPage="currentPage" :pageSize="pageSize" addBtnLabel="Add Product"
-            @update:currentPage="updateCurrentPage" @update:pageSize="updatePageSize" @add=""
-            @view="" @edit="" @delete="" :view="false">
+            @update:currentPage="updateCurrentPage" @update:pageSize="updatePageSize" @add="router.push('/dashboard/products/create')"
+            @view="" @edit="goToEditPage" @delete="confirmDeleteItem" :view="false">
             <SearchBox :columns="search_columns" v-model="search" @search="handleSearch" />
         </DataTable>
     </div>
@@ -13,6 +13,7 @@
 
 <script setup>
 import { toast } from 'vue-sonner'
+import ImageCell from '~/components/Table/ImageCell.vue';
 
 const totalItems = ref(4);
 const currentPage = ref(1);
@@ -22,7 +23,7 @@ const data = ref([]);
 const loading = ref(false);
 
 const columns = [
-    { accessorKey: 'images', header: 'Product' },
+    { accessorKey: 'product_image', header: 'Product', cell: ImageCell },
     { accessorKey: 'product_name', header: 'Name' },
     { accessorKey: 'price', header: 'Price (RM)' },
     { accessorKey: 'qty', header: 'Quantity' },
@@ -75,6 +76,7 @@ const fetchData = async () => {
         data.value = response.products.data.map((item) => ({
             id: item.id,
             images: item.images,
+            product_image: item.images && item.images.length > 0 ? item.images[0] : null,
             product_name: item.product_name,
             price: item.price,
             qty: item.qty,
@@ -97,4 +99,30 @@ const fetchData = async () => {
 onMounted(() => {
     fetchData();
 })
+
+function goToEditPage(data) {
+    router.push(`/dashboard/products/edit/${data.id}`);
+}
+
+const confirmDeleteItem = (data) => {
+    if (confirm(`Are you sure you want to delete: ${data.product_name}?`)) {
+        deleteItem(data.id)
+    }
+};
+
+const deleteItem = async (id) => {
+    loading.value = true
+    try {
+        await useApi(`/products/${id}`, {
+            method: 'DELETE',
+        })
+        toast.success('Product Successfully Deleted!')
+        fetchData();
+    } catch (error) {
+        console.log(error)
+        toast.error('Failed to delete product. Please try again.')
+    } finally {
+        loading.value = false;
+    }
+}
 </script>
