@@ -31,7 +31,7 @@
             <h3 class="text-gray-800 font-medium text-sm line-clamp-2 leading-tight">
                 {{ product.product_name }}
             </h3>
-            <p class="text-gray-500 text-xs mt-0.5">Accessories</p>
+            <p class="text-gray-500 text-xs mt-0.5">{{ product.category_name }}</p>
 
             <!-- Price -->
             <div class="mt-1">

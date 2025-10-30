@@ -1,9 +1,13 @@
 <template>
     <div class="flex px-20 py-8 gap-4">
-        <div class="w-1/5">
-            <PriceRangeFilter :min="0" :max="5000" @filter="handleFilter" />
+        <!-- Sidebar Filters (optional) -->
+        <div class="w-1/5" v-if="showPriceFilter">
+            <PriceRangeFilter :min="filter.price_range?.start ?? 0" :max="filter.price_range?.end ?? 5000"
+                @filter="handleFilter" />
         </div>
-        <div class="w-4/5">
+
+        <!-- Main Product Area -->
+        <div :class="showPriceFilter ? 'w-4/5' : 'w-full'">
             <div class="flex justify-between items-center mb-4">
                 <BreadCrumb :items="breadcrumbItems" />
                 <div class="flex items-center space-x-4">
@@ -11,6 +15,7 @@
                     <Pagination :current-page="currentPage" :total-pages="totalPages" @change-page="goToPage" />
                 </div>
             </div>
+
             <Spinner v-if="loading" />
             <div v-else-if="products.length === 0">
                 <p class="text-gray-600">No products found.</p>
@@ -25,64 +30,70 @@
 </template>
 
 <script setup>
+import { ref, computed, onMounted } from 'vue'
 import { toast } from 'vue-sonner'
 
-const totalItems = ref(0);
-const currentPage = ref(1);
-const pageSize = ref(10);
-
-const products = ref([]);
-const loading = ref(false);
-const selectedSort = ref('')
-
-const breadcrumbItems = computed(() => [
-    { label: 'Shop' },
-    { label: 'All Products' },
-]);
-
-// Filter state
-const filters = ref({
-    price_range: {
-        start: null,
-        end: null
+const props = defineProps({
+    filter: {
+        type: Object,
+        default: () => ({
+            price_range: null,
+            stock: null,
+            category_id: null,
+            sort: 'created_at_desc'
+        })
     },
-    stock: {
-        onSale: false,
-        inStock: false,
-        onBackorder: false
-    }
+    breadcrumbItems: { // ✅ New prop
+        type: Array,
+        default: () => []
+    },
+    showPriceFilter: { type: Boolean, default: true }
 })
 
-const totalPages = computed(() => {
-    return Math.ceil(totalItems.value / pageSize.value)
-})
+const products = ref([])
+const loading = ref(false)
+const currentPage = ref(1)
+const pageSize = ref(10)
+const selectedSort = ref(props.filter.sort || 'created_at_desc')
+const totalItems = ref(0)
+const totalPages = computed(() => Math.ceil(totalItems.value / pageSize.value))
 
+// --- Fetch Products ---
 const fetchData = async () => {
     loading.value = true
     try {
-        let params = {
+        const baseParams = {
             perPage: pageSize.value,
             page: currentPage.value,
-            // Price range
-            ...(filters.value.price_range.start !== null && filters.value.price_range.end !== null
-                ? {
-                    'price_range[start]': filters.value.price_range.start,
-                    'price_range[end]': filters.value.price_range.end,
-                }
-                : {}),
-            // Stock filters
-            ...(filters.value.stock.onSale ? { on_sale: 1 } : {}),
-            ...(filters.value.stock.inStock ? { in_stock: 1 } : {}),
-            ...(filters.value.stock.onBackorder ? { on_backorder: 1 } : {}),
-            // Sort
-            ...(selectedSort.value ? { sort: selectedSort.value } : {}),
+            sort: selectedSort.value || props.filter.sort || 'created_at_desc',
         }
 
-        const response = await useApi('/products', {
-            params: params
-        });
+        // Build dynamic params based on props.filter
+        const extraParams = {}
 
+        // Price range
+        if (props.filter.price_range?.start != null && props.filter.price_range?.end != null) {
+            extraParams['price_range[start]'] = props.filter.price_range.start
+            extraParams['price_range[end]'] = props.filter.price_range.end
+        }
+
+        // Stock filters
+        if (props.filter.stock?.onSale) extraParams.on_sale = 1
+        if (props.filter.stock?.inStock) extraParams.in_stock = 1
+        if (props.filter.stock?.onBackorder) extraParams.on_backorder = 1
+
+        // Add any other filters (like category_id, is_popular, etc.)
+        for (const [key, value] of Object.entries(props.filter)) {
+            if (!['price_range', 'stock', 'sort'].includes(key) && value != null) {
+                extraParams[key] = value
+            }
+        }
+
+        const params = { ...baseParams, ...extraParams }
+
+        const response = await useApi('/products', { params })
         const config = useRuntimeConfig()
+
         products.value = response.products.data.map((item) => ({
             id: item.id,
             images: item.images,
@@ -97,21 +108,22 @@ const fetchData = async () => {
             discount_type: item.discount_type,
             discount_amount: item.discount_amount,
             created_by: item.created_by_user?.name || '',
+            category_name: item.category?.category_name || ''
         }))
 
         totalItems.value = response.products.total
     } catch (error) {
-        // console.log(error)
         toast.error('Failed to load products.')
     } finally {
-        loading.value = false;
+        loading.value = false
     }
 }
 
+// --- Handlers ---
 const handleFilter = (filterData) => {
-    filters.value.price_range = filterData.priceRange
-    filters.value.stock = filterData.stock
-    currentPage.value = 1 // Reset to first page when filtering
+    props.filter.price_range = filterData.priceRange
+    props.filter.stock = filterData.stock
+    currentPage.value = 1
     fetchData()
 }
 
@@ -123,7 +135,6 @@ const goToPage = (page) => {
 }
 
 onMounted(() => {
-    fetchData();
+    fetchData()
 })
-
 </script>

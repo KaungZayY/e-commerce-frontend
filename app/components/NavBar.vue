@@ -143,7 +143,8 @@
                                 class="absolute z-20 right-0 mt-2 w-56 bg-white rounded-md shadow-lg border border-blue-100"
                                 @mouseleave="desktopDropdown = ''">
                                 <template v-for="(item, idx) in [
-                                    { label: 'Routers Wi-Fi Devices', to: '/networking/routers' },
+                                    { label: 'Routers', to: '/networking/routers' },
+                                    { label: 'Wi-Fi Devices', to: '/networking/wifi-devices' },
                                     { label: 'Cables', to: '/networking/cables' },
                                     { label: 'Modems', to: '/networking/modems' }
                                 ]" :key="item.to">
@@ -170,7 +171,7 @@
                                 @mouseleave="desktopDropdown = ''">
                                 <template v-for="(item, idx) in [
                                     { label: 'Flash Deals', to: '/deals/flash' },
-                                    { label: 'Discount Bundles', to: '/deals/discount-bundles' }
+                                    // { label: 'Discount Bundles', to: '/deals/discount-bundles' }
                                 ]" :key="item.to">
                                     <NuxtLink :to="item.to"
                                         :class="[isRoute(item.to) ? 'text-blue-600' : 'text-black', 'font-semibold block px-4 py-2 text-sm hover:bg-blue-50', idx < 1 ? 'border-b border-gray-200' : '']">
