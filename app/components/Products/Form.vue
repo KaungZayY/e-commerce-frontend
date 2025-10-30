@@ -39,7 +39,7 @@
                         optionLabel="category_name" optionValue="id" id="category_id" placeholder="Select Sub Category"
                         :required="true" :error="errors.category_id ? errors.category_id[0] : ''" />
                 </div>
-                <div v-if="category_id == 24 || category_id == 25">
+                <div v-if="category_id == 21 || category_id == 22">
                     <Textbox id="moq" label="Minimum Order Quantity (MOQ)" type="number" v-model="moq"
                         :error="errors.moq ? errors.moq[0] : ''" />
                 </div>
@@ -102,7 +102,7 @@ const category_id = ref(null)
 const moq = ref('')
 
 const priceLabel = computed(() => {
-    return category_id.value == 24 || category_id.value == 25
+    return category_id.value == 21 || category_id.value == 22
         ? 'Bulk Price (RM) Per Unit'
         : 'Price (RM)'
 })
