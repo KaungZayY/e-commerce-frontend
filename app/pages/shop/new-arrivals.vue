@@ -1,4 +1,4 @@
 <template>
-    <PageBanner label="All Products" />
+    <PageBanner label="New Arrivals" />
     <ProductsCustomerView />
 </template>
