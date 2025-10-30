@@ -1,14 +1,25 @@
 <template>
-    <nav class="bg-white shadow">
+    <nav class="bg-white shadow sticky top-0 z-50 transition-all duration-300" :class="{
+        'shadow-lg': isScrolled
+    }">
         <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <div class="flex items-center justify-between h-16">
+            <div class="flex items-center justify-between transition-all duration-300" :class="{
+                'h-16': !isScrolled,
+                'h-14': isScrolled
+            }">
                 <!-- Brand/Logo on left -->
-                <div class="shrink-0 flex items-center">
+                <div class="shrink-0 flex items-center transition-all duration-300" :class="{
+                    'scale-100': !isScrolled,
+                    'scale-90': isScrolled
+                }">
                     <NuxtLink to="/" class="text-xl font-bold text-blue-700 whitespace-nowrap">E Commerce</NuxtLink>
                 </div>
 
                 <!-- Center nav tabs desktop only -->
-                <div class="hidden lg:flex flex-1 justify-center px-4">
+                <div class="hidden lg:flex flex-1 justify-center px-4 transition-all duration-300" :class="{
+                    'scale-100': !isScrolled,
+                    'scale-95': isScrolled
+                }">
                     <div class="flex items-center space-x-1 text-sm">
                         <NuxtLink to="/"
                             :class="[isActiveHome ? 'text-blue-600 font-bold underline' : 'text-black font-bold', 'px-3 py-2 rounded-md text-sm transition-colors hover:underline whitespace-nowrap']">
@@ -197,7 +208,10 @@
                 </div>
 
                 <!-- Desktop: right side icons and auth -->
-                <div class="hidden lg:flex gap-2 shrink-0 items-center">
+                <div class="hidden lg:flex gap-2 shrink-0 items-center transition-all duration-300" :class="{
+                    'scale-100': !isScrolled,
+                    'scale-90': isScrolled
+                }">
                     <!-- Un Auth User Login-->
                     <NuxtLink to="/login" v-if="user_role == null"
                         class="text-black font-semibold px-3 py-2 text-sm hover:text-blue-700 hover:underline whitespace-nowrap">
@@ -316,6 +330,21 @@
 
 <script setup>
 import { toast } from 'vue-sonner'
+
+// Scroll tracking
+const isScrolled = ref(false)
+
+onMounted(() => {
+    const handleScroll = () => {
+        isScrolled.value = window.scrollY > 10
+    }
+
+    window.addEventListener('scroll', handleScroll)
+
+    onUnmounted(() => {
+        window.removeEventListener('scroll', handleScroll)
+    })
+})
 
 // For mobile item dropdowns
 const mobileOpen = ref(false);
