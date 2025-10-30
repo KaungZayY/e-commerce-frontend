@@ -5,6 +5,13 @@
             <PriceRangeFilter :min="0" :max="5000" @filter="handleFilter" />
         </div>
         <div class="w-4/5">
+            <div class="flex justify-between items-center mb-4">
+                <BreadCrumb :items="breadcrumbItems" />
+                <div class="flex items-center space-x-4">
+                    <ProductSort v-model="selectedSort" @sort-change="fetchData" />
+                    <Pagination :current-page="currentPage" :total-pages="totalPages" @change-page="goToPage" />
+                </div>
+            </div>
             <Spinner v-if="loading" />
             <div v-else-if="products.length === 0">
                 <p class="text-gray-600">No products found.</p>
@@ -27,6 +34,12 @@ const pageSize = ref(10);
 
 const products = ref([]);
 const loading = ref(false);
+const selectedSort = ref('')
+
+const breadcrumbItems = computed(() => [
+    { label: 'Shop' },
+    { label: 'All Products' },
+]);
 
 // Filter state
 const filters = ref({
@@ -51,23 +64,19 @@ const fetchData = async () => {
         let params = {
             perPage: pageSize.value,
             page: currentPage.value,
-        }
-
-        // Add price range filter if set
-        if (filters.value.price_range.start !== null && filters.value.price_range.end !== null) {
-            params['price_range[start]'] = filters.value.price_range.start
-            params['price_range[end]'] = filters.value.price_range.end
-        }
-
-        // Add stock filters
-        if (filters.value.stock.onSale) {
-            params.on_sale = 1
-        }
-        if (filters.value.stock.inStock) {
-            params.in_stock = 1
-        }
-        if (filters.value.stock.onBackorder) {
-            params.on_backorder = 1
+            // Price range
+            ...(filters.value.price_range.start !== null && filters.value.price_range.end !== null
+                ? {
+                    'price_range[start]': filters.value.price_range.start,
+                    'price_range[end]': filters.value.price_range.end,
+                }
+                : {}),
+            // Stock filters
+            ...(filters.value.stock.onSale ? { on_sale: 1 } : {}),
+            ...(filters.value.stock.inStock ? { in_stock: 1 } : {}),
+            ...(filters.value.stock.onBackorder ? { on_backorder: 1 } : {}),
+            // Sort
+            ...(selectedSort.value ? { sort: selectedSort.value } : {}),
         }
 
         const response = await useApi('/products', {
@@ -93,7 +102,7 @@ const fetchData = async () => {
 
         totalItems.value = response.products.total
     } catch (error) {
-        console.log(error)
+        // console.log(error)
         toast.error('Failed to load products.')
     } finally {
         loading.value = false;
