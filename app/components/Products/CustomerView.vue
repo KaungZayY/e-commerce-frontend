@@ -2,7 +2,7 @@
     <div class="flex px-20 py-8 gap-4">
         <!-- Sidebar Filters (optional) -->
         <div class="w-1/5" v-if="showPriceFilter">
-            <PriceRangeFilter :min="filter.price_range?.start ?? 0" :max="filter.price_range?.end ?? 5000"
+            <PriceRangeFilter min="0" max="5000"
                 @filter="handleFilter" />
         </div>
 
