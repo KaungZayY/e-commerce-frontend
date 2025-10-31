@@ -158,6 +158,8 @@ const checkout = async () => {
         if (error.statusCode === 422 && error.data?.errors) {
             errors.value = error.data.errors;
             toast.error('Please fix the validation errors.')
+        } else if (error.statusCode === 400 || error.statusCode === 404) {
+            toast.error(error.data.message || 'An error occurred while placing your order.')
         } else {
             toast.error('Something went wrong while placing your order.')
         }
