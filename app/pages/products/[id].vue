@@ -122,6 +122,8 @@
                 <h2 class="text-2xl font-bold text-gray-900 mb-4">Product Description</h2>
                 <div class="prose max-w-none text-gray-700" v-html="description"></div>
             </div>
+
+            <Recommended v-if="category_id" :category_id="category_id" :product_id="route.params.id"/>
         </div>
 
         <Spinner v-if="spinner" />
@@ -130,6 +132,7 @@
 
 <script setup>
 import { toast } from 'vue-sonner';
+import Recommended from '~/components/Products/Recommended.vue';
 
 const spinner = ref(false);
 const route = useRoute()
@@ -218,6 +221,7 @@ const formatPrice = (value) => {
 
 const product_name = ref('');
 const main_category_name = ref('')
+const category_id = ref('')
 const category_name = ref('');
 const images = ref([]);
 const price = ref('')
@@ -335,7 +339,8 @@ const fetchData = async () => {
         discount_amount.value = response.product?.discount_amount || '';
         stockQty.value = response.product?.qty || 0;
         is_favorite.value = response.product?.is_favorited || false;
-        console.log(response)
+        category_id.value = response.product?.category_id || '';
+        // console.log(response)
     } catch (error) {
         console.log(error)
         toast.error('Failed to load product info.')
