@@ -78,10 +78,13 @@
 
                     <!-- Wishlist -->
                     <div class="mb-6 pb-6 border-b border-gray-200">
-                        <button @click="toggleWishlist"
-                            class="flex items-center gap-2 text-gray-700 hover:text-red-600 transition group">
-                            <i class="pi pi-heart group-hover:scale-110 transition-transform text-xl"></i>
-                            <span class="font-medium">Add to Wishlist</span>
+                        <button @click="toggleWishlist" class="flex items-center gap-2 transition group"
+                            :class="is_favorite ? 'text-red-600' : 'text-gray-700 hover:text-red-600'">
+                            <i class="text-xl transition-transform"
+                                :class="is_favorite ? 'pi pi-heart-fill' : 'pi pi-heart group-hover:scale-110'"></i>
+                            <span class="font-medium">
+                                {{ is_favorite ? 'Remove from Wishlist' : 'Add to Wishlist' }}
+                            </span>
                         </button>
                     </div>
 
@@ -223,6 +226,7 @@ const discount_type = ref('')
 const discount_amount = ref('')
 const quantity = ref(1)
 const stockQty = ref(0)
+const is_favorite = ref(false)
 
 // Discount calculations
 const hasDiscount = computed(() => {
@@ -280,7 +284,40 @@ const buyNow = () => {
 }
 
 const toggleWishlist = () => {
-    toast.success('Added to wishlist')
+    if (is_favorite.value) {
+        remove_from_wishlist()
+    } else {
+        add_to_wishlist()
+    }
+}
+
+const add_to_wishlist = async () => {
+    if (!id) return;
+    try {
+        await useApi(`/favorites`, {
+            method: 'POST',
+            body: { product_id: id }
+        });
+        is_favorite.value = true;
+        toast.success('Product added to your wishlist.');
+    } catch (error) {
+        console.log(error);
+        toast.error('Failed to add product to wishlist.');
+    }
+}
+
+const remove_from_wishlist = async () => {
+    if (!id) return;
+    try {
+        await useApi(`/favorites/${id}`, {
+            method: 'DELETE'
+        });
+        is_favorite.value = false;
+        toast.success('Product removed from your wishlist.');
+    } catch (error) {
+        console.log(error);
+        toast.error('Failed to remove product from wishlist.');
+    }
 }
 
 const fetchData = async () => {
@@ -297,6 +334,8 @@ const fetchData = async () => {
         discount_type.value = response.product?.discount_type || '';
         discount_amount.value = response.product?.discount_amount || '';
         stockQty.value = response.product?.qty || 0;
+        is_favorite.value = response.product?.is_favorited || false;
+        console.log(response)
     } catch (error) {
         console.log(error)
         toast.error('Failed to load product info.')

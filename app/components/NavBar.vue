@@ -233,6 +233,10 @@
                         <div v-if="desktopDropdown === 'profile'"
                             class="absolute z-20 right-0 mt-2 w-48 bg-white rounded-md shadow-lg border border-blue-100"
                             @mouseleave="desktopDropdown = ''">
+                            <NuxtLink to="/profile/favorite" v-if="user_role == 2"
+                                :class="[isRoute('/profile/favorite') ? 'text-blue-600' : 'text-black', 'font-semibold block px-4 py-2 text-sm hover:bg-blue-50 border-b border-gray-200']">
+                                Wishlist
+                            </NuxtLink>
                             <!-- Customer Orders -->
                             <NuxtLink to="/purchases" v-if="user_role == 2"
                                 :class="[isRoute('/purchases') ? 'text-blue-600' : 'text-black', 'font-semibold block px-4 py-2 text-sm hover:bg-blue-50 border-b border-gray-200']">
