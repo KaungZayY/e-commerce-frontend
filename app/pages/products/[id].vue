@@ -61,7 +61,8 @@
                             </div>
                         </div>
                         <div v-else>
-                            <QtyInput id="quantity" label="Quantity:" v-model="quantity" :error="moq_error ? moq_error : ''" />
+                            <QtyInput id="quantity" label="Quantity:" v-model="quantity"
+                                :error="quantity_error ? quantity_error : ''" />
                         </div>
 
                         <div class="flex gap-3">
@@ -148,10 +149,11 @@
 import { toast } from 'vue-sonner';
 import Recommended from '~/components/Products/Recommended.vue';
 
+const router = useRouter();
 const spinner = ref(false);
 const route = useRoute()
 const id = Number(route.params.id)
-const moq_error = ref('')
+const quantity_error = ref('')
 
 // Import cart composable
 const { addToCart } = useCart()
@@ -311,11 +313,11 @@ const decreaseQty = () => {
 
 // Action handlers
 const handleAddToCart = () => {
-    moq_error.value = null // clear old errors
+    quantity_error.value = null // clear old errors
 
     // 🧩 Check for MOQ restriction for category 21 or 22
     if ((category_id.value === 21 || category_id.value === 22) && quantity.value < moq.value) {
-        moq_error.value = `Minimum order quantity is ${moq.value}`
+        quantity_error.value = `Minimum order quantity is ${moq.value}`
         toast.error(`Please order at least ${moq.value} units.`)
         return // stop execution
     }
@@ -335,7 +337,27 @@ const handleAddToCart = () => {
 }
 
 const buyNow = () => {
-    toast.info('Redirecting to checkout...')
+    quantity_error.value = null // clear old errors
+
+    // 🧩 Check for MOQ restriction for category 21 or 22
+    if ((category_id.value === 21 || category_id.value === 22) && quantity.value < moq.value) {
+        quantity_error.value = `Minimum order quantity is ${moq.value}`
+        toast.error(`Please order at least ${moq.value} units.`)
+        return // stop execution
+    }
+
+    const productData = {
+        id: id,
+        product_name: product_name.value,
+        price: finalPrice.value, // Use final price after discount
+        original_price: parseFloat(price.value),
+        discount_type: discount_type.value,
+        discount_amount: discount_amount.value,
+        images: images.value
+    }
+
+    addToCart(productData, quantity.value)
+    router.push(`/checkout`)
 }
 
 const toggleWishlist = () => {
