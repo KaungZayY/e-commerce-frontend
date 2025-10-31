@@ -9,7 +9,7 @@
         </div>
 
         <div>
-            <div class="flex justify-end">
+            <div class="flex justify-end mb-4">
                 <Pagination :current-page="currentPage" :total-pages="totalPages" @change-page="goToPage" />
             </div>
             <Spinner v-if="loading" />

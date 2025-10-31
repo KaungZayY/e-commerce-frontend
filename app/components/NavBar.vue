@@ -383,6 +383,7 @@ const handleLogout = async () => {
             method: 'POST'
         });
         localStorage.removeItem('token');
+        localStorage.removeItem('id');
         localStorage.removeItem('user_name');
         localStorage.removeItem('user_role');
         toast.success('Logout Successful!.')

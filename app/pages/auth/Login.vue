@@ -54,6 +54,7 @@ const handleLogin = async () => {
         })
         // console.log(response)
         localStorage.setItem('token', response.token);
+        localStorage.setItem('id', response.user.id);
         localStorage.setItem('user_name', response.user.name);
         localStorage.setItem('user_role', response.user.user_role_id);
         toast.success('Login Successful!')

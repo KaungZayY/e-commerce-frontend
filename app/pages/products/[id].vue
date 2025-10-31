@@ -123,7 +123,16 @@
                 <div class="prose max-w-none text-gray-700" v-html="description"></div>
             </div>
 
-            <Recommended v-if="category_id" :category_id="category_id" :product_id="route.params.id"/>
+            <div class="flex gap-8">
+                <div class="w-1/2">
+                    <ProductsReviews :key="reviewsKey" :product_id="Number(route.params.id)" class="mt-8" @edit="editReview"/>
+                </div>
+                <div class="w-1/2">
+                    <ProductsReviewForm :key="formKey" :product_id="Number(route.params.id)" :id="selectedId" class="mt-8" @success="onReviewSuccess" @cancel="cancelEdit"/>
+                </div>
+            </div>
+
+            <Recommended v-if="category_id" :category_id="category_id" :product_id="Number(route.params.id)" />
         </div>
 
         <Spinner v-if="spinner" />
@@ -136,7 +145,12 @@ import Recommended from '~/components/Products/Recommended.vue';
 
 const spinner = ref(false);
 const route = useRoute()
-const id = route.params.id
+const id = Number(route.params.id)
+
+const reviewsKey = ref(0)
+const onReviewSuccess = () => {
+    reviewsKey.value++
+}
 
 // Category navigation mapping based on navbar structure
 const categoryNavMap = {
@@ -352,4 +366,16 @@ const fetchData = async () => {
 onMounted(() => {
     fetchData()
 })
+
+const selectedId = ref(null)
+const formKey = ref(0)
+const editReview = (review) => {
+    selectedId.value = review.id
+    // console.log(review.id)
+    formKey.value++
+}
+
+const cancelEdit = () => {
+    selectedId.value = null
+}
 </script>
