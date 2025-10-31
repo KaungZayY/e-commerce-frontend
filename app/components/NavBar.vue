@@ -219,7 +219,7 @@
                         Login/Register</NuxtLink>
                     <NuxtLink to="/search" class="text-black p-2 hover:text-blue-700"><i
                             class="pi pi-search text-xl"></i></NuxtLink>
-                    <NuxtLink to="/favorites" class="text-black p-2 hover:text-blue-700"><i
+                    <NuxtLink to="/profile/favorite" class="text-black p-2 hover:text-blue-700"><i
                             class="pi pi-heart text-xl"></i></NuxtLink>
                     <NuxtLink to="/cart" class="text-black p-2 hover:text-blue-700"><i
                             class="pi pi-shopping-cart text-xl"></i>
@@ -233,10 +233,10 @@
                         <div v-if="desktopDropdown === 'profile'"
                             class="absolute z-20 right-0 mt-2 w-48 bg-white rounded-md shadow-lg border border-blue-100"
                             @mouseleave="desktopDropdown = ''">
-                            <NuxtLink to="/profile/favorite" v-if="user_role == 2"
+                            <!-- <NuxtLink to="/profile/favorite" v-if="user_role == 2"
                                 :class="[isRoute('/profile/favorite') ? 'text-blue-600' : 'text-black', 'font-semibold block px-4 py-2 text-sm hover:bg-blue-50 border-b border-gray-200']">
                                 Wishlist
-                            </NuxtLink>
+                            </NuxtLink> -->
                             <!-- Customer Orders -->
                             <NuxtLink to="/purchases" v-if="user_role == 2"
                                 :class="[isRoute('/purchases') ? 'text-blue-600' : 'text-black', 'font-semibold block px-4 py-2 text-sm hover:bg-blue-50 border-b border-gray-200']">
