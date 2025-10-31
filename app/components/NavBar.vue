@@ -171,7 +171,6 @@
                                 @mouseleave="desktopDropdown = ''">
                                 <template v-for="(item, idx) in [
                                     { label: 'Flash Deals', to: '/deals/flash' },
-                                    // { label: 'Discount Bundles', to: '/deals/discount-bundles' }
                                 ]" :key="item.to">
                                     <NuxtLink :to="item.to"
                                         :class="[isRoute(item.to) ? 'text-blue-600' : 'text-black', 'font-semibold block px-4 py-2 text-sm hover:bg-blue-50', idx < 1 ? 'border-b border-gray-200' : '']">
@@ -220,10 +219,15 @@
                     <NuxtLink to="/search" class="text-black p-2 hover:text-blue-700"><i
                             class="pi pi-search text-xl"></i></NuxtLink>
                     <NuxtLink to="/profile/favorite" class="text-black p-2 hover:text-blue-700"><i
-                            class="pi pi-heart text-xl"></i></NuxtLink>
-                    <NuxtLink to="/cart" class="text-black p-2 hover:text-blue-700"><i
-                            class="pi pi-shopping-cart text-xl"></i>
+                            class="pi pi-heart text-xl"></i>
                     </NuxtLink>
+                    <button @click="toggleCart" class="relative text-black p-2 hover:text-blue-700">
+                        <i class="pi pi-shopping-cart text-xl"></i>
+                        <span v-if="totalItems > 0"
+                            class="absolute -top-1 -right-1 bg-blue-600 text-white text-xs font-bold rounded-full w-4 h-4 flex items-center justify-center">
+                            {{ totalItems }}
+                        </span>
+                    </button>
 
                     <!-- Profile Dropdown -->
                     <div class="relative" v-if="user_role !== ''">
@@ -233,10 +237,6 @@
                         <div v-if="desktopDropdown === 'profile'"
                             class="absolute z-20 right-0 mt-2 w-48 bg-white rounded-md shadow-lg border border-blue-100"
                             @mouseleave="desktopDropdown = ''">
-                            <!-- <NuxtLink to="/profile/favorite" v-if="user_role == 2"
-                                :class="[isRoute('/profile/favorite') ? 'text-blue-600' : 'text-black', 'font-semibold block px-4 py-2 text-sm hover:bg-blue-50 border-b border-gray-200']">
-                                Wishlist
-                            </NuxtLink> -->
                             <!-- Customer Orders -->
                             <NuxtLink to="/purchases" v-if="user_role == 2"
                                 :class="[isRoute('/purchases') ? 'text-blue-600' : 'text-black', 'font-semibold block px-4 py-2 text-sm hover:bg-blue-50 border-b border-gray-200']">
@@ -331,10 +331,97 @@
             </div>
         </div>
     </nav>
+
+    <!-- Cart Sidebar -->
+    <transition name="slide">
+        <div v-if="isCartOpen" class="fixed inset-0 bg-black/40 z-[60] flex justify-end" @click.self="toggleCart">
+            <div class="w-96 bg-white h-full shadow-lg flex flex-col">
+                <!-- Cart Header -->
+                <div class="flex justify-between items-center p-6 border-b border-gray-200">
+                    <h2 class="text-xl font-bold text-gray-900">Your Cart</h2>
+                    <button @click="toggleCart" class="text-gray-500 hover:text-gray-700 transition">
+                        <i class="pi pi-times text-2xl"></i>
+                    </button>
+                </div>
+
+                <!-- Cart Items -->
+                <div class="flex-1 overflow-y-auto p-4">
+                    <div v-if="cartItems.length === 0"
+                        class="flex flex-col items-center justify-center h-full text-center">
+                        <i class="pi pi-shopping-cart text-6xl text-gray-300 mb-4"></i>
+                        <p class="text-gray-500 text-lg">Your cart is empty</p>
+                        <p class="text-gray-400 text-sm mt-2">Add some products to get started!</p>
+                    </div>
+
+                    <div v-else class="space-y-4">
+                        <div v-for="item in cartItems" :key="item.id"
+                            class="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                            <div class="flex gap-4">
+                                <!-- Product Image -->
+                                <div
+                                    class="w-20 h-20 bg-white rounded-md overflow-hidden border border-gray-200 flex-shrink-0">
+                                    <img v-if="item.image" :src="item.image" :alt="item.name"
+                                        class="w-full h-full object-cover" />
+                                    <div v-else class="w-full h-full flex items-center justify-center bg-gray-100">
+                                        <i class="pi pi-image text-gray-400 text-2xl"></i>
+                                    </div>
+                                </div>
+
+                                <!-- Product Details -->
+                                <div class="flex-1 min-w-0">
+                                    <h3 class="text-sm font-semibold text-gray-900 mb-1 truncate">{{ item.name }}</h3>
+                                    <p class="text-lg font-bold text-blue-600">RM{{ formatPrice(item.price) }}</p>
+
+                                    <!-- Quantity Controls -->
+                                    <div class="flex items-center gap-2 mt-2">
+                                        <button @click="updateQuantity(item.id, item.quantity - 1)"
+                                            class="w-7 h-7 flex items-center justify-center bg-gray-200 hover:bg-gray-300 rounded transition">
+                                            <i class="pi pi-minus text-xs"></i>
+                                        </button>
+                                        <span class="w-10 text-center font-semibold text-gray-900">{{ item.quantity
+                                            }}</span>
+                                        <button @click="updateQuantity(item.id, item.quantity + 1)"
+                                            class="w-7 h-7 flex items-center justify-center bg-gray-200 hover:bg-gray-300 rounded transition">
+                                            <i class="pi pi-plus text-xs"></i>
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <!-- Remove Button -->
+                                <button @click="removeFromCart(item.id)"
+                                    class="text-red-500 hover:text-red-700 transition self-start">
+                                    <i class="pi pi-trash text-lg"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Cart Footer -->
+                <div v-if="cartItems.length > 0" class="border-t border-gray-200 p-6 bg-gray-50">
+                    <div class="space-y-3 mb-4">
+                        <div class="flex justify-between text-sm">
+                            <span class="text-gray-600">Subtotal ({{ totalItems }} items)</span>
+                            <span class="font-semibold text-gray-900">RM{{ formatPrice(totalPrice) }}</span>
+                        </div>
+                    </div>
+
+                    <button @click="checkout"
+                        class="w-full bg-gradient-to-r from-blue-600 to-blue-700 text-white py-3.5 rounded-lg font-bold hover:from-blue-700 hover:to-blue-800 transition-all shadow-md hover:shadow-lg uppercase text-sm tracking-wide">
+                        <i class="pi pi-shopping-bag mr-2"></i>
+                        Proceed to Checkout
+                    </button>
+                </div>
+            </div>
+        </div>
+    </transition>
 </template>
 
 <script setup>
 import { toast } from 'vue-sonner'
+
+// Use cart composable
+const { cartItems, isCartOpen, toggleCart, removeFromCart, updateQuantity, totalItems, totalPrice } = useCart()
 
 // Scroll tracking
 const isScrolled = ref(false)
@@ -350,6 +437,19 @@ onMounted(() => {
         window.removeEventListener('scroll', handleScroll)
     })
 })
+
+// Helper function
+const formatPrice = (value) => {
+    const num = parseFloat(value)
+    if (Number.isInteger(num)) return num.toString()
+    return num.toFixed(2)
+}
+
+const checkout = () => {
+    toast.info('Proceeding to checkout...')
+    // Navigate to checkout page if needed
+    // navigateTo('/checkout')
+}
 
 // For mobile item dropdowns
 const mobileOpen = ref(false);
@@ -410,4 +510,15 @@ const isActiveWholesale = computed(() => route.path.startsWith('/wholesale'));
 
 <style scoped>
 @import 'primeicons/primeicons.css';
+
+.slide-enter-from,
+.slide-leave-to {
+    transform: translateX(100%);
+    opacity: 0;
+}
+
+.slide-enter-active,
+.slide-leave-active {
+    transition: all 0.3s ease;
+}
 </style>

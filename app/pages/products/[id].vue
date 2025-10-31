@@ -62,7 +62,7 @@
                         </div>
 
                         <div class="flex gap-3">
-                            <button @click="addToCart"
+                            <button @click="handleAddToCart"
                                 class="flex-1 bg-gradient-to-r from-blue-600 to-blue-700 text-white font-bold py-3.5 px-6 rounded-lg hover:from-blue-700 hover:to-blue-800 transition-all shadow-md hover:shadow-lg uppercase text-sm tracking-wide">
                                 <i class="pi pi-shopping-cart mr-2"></i>
                                 ADD TO CART
@@ -125,10 +125,12 @@
 
             <div class="flex gap-8">
                 <div class="w-1/2">
-                    <ProductsReviews :key="reviewsKey" :product_id="Number(route.params.id)" class="mt-8" @edit="editReview"/>
+                    <ProductsReviews :key="reviewsKey" :product_id="Number(route.params.id)" class="mt-8"
+                        @edit="editReview" />
                 </div>
                 <div class="w-1/2">
-                    <ProductsReviewForm :key="formKey" :product_id="Number(route.params.id)" :id="selectedId" class="mt-8" @success="onReviewSuccess" @cancel="cancelEdit"/>
+                    <ProductsReviewForm :key="formKey" :product_id="Number(route.params.id)" :id="selectedId"
+                        class="mt-8" @success="onReviewSuccess" @cancel="cancelEdit" />
                 </div>
             </div>
 
@@ -146,6 +148,9 @@ import Recommended from '~/components/Products/Recommended.vue';
 const spinner = ref(false);
 const route = useRoute()
 const id = Number(route.params.id)
+
+// Import cart composable
+const { addToCart } = useCart()
 
 const reviewsKey = ref(0)
 const onReviewSuccess = () => {
@@ -188,7 +193,14 @@ const categoryNavMap = {
             'Cables': 'cables',
             'Modems': 'modems'
         }
-    }
+    },
+    'Wholesale': {
+        slug: 'wholesale',
+        subcategories: {
+            'Telecom & Mobile Devices': 'telecom-mobile',
+            'General Wholesale': 'general',
+        }
+    },
 }
 
 const breadcrumbItems = computed(() => {
@@ -293,7 +305,18 @@ const decreaseQty = () => {
 }
 
 // Action handlers
-const addToCart = () => {
+const handleAddToCart = () => {
+    const productData = {
+        id: id,
+        product_name: product_name.value,
+        price: finalPrice.value, // Use final price after discount
+        original_price: parseFloat(price.value),
+        discount_type: discount_type.value,
+        discount_amount: discount_amount.value,
+        images: images.value
+    }
+
+    addToCart(productData, quantity.value)
     toast.success(`Added ${quantity.value} item(s) to cart`)
 }
 
@@ -354,7 +377,7 @@ const fetchData = async () => {
         stockQty.value = response.product?.qty || 0;
         is_favorite.value = response.product?.is_favorited || false;
         category_id.value = response.product?.category_id || '';
-        // console.log(response)
+        console.log(response)
     } catch (error) {
         console.log(error)
         toast.error('Failed to load product info.')
@@ -371,7 +394,6 @@ const selectedId = ref(null)
 const formKey = ref(0)
 const editReview = (review) => {
     selectedId.value = review.id
-    // console.log(review.id)
     formKey.value++
 }
 

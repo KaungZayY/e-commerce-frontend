@@ -1,8 +1,8 @@
 <template>
-    <div class="relative group bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-all hover:cursor-pointer duration-300"
-        @click="goToDetailsPage">
+    <div
+        class="relative group bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-all hover:cursor-pointer duration-300">
         <!-- Product Image -->
-        <div class="relative w-full h-40 flex items-center justify-center overflow-hidden">
+        <div class="relative w-full h-40 flex items-center justify-center overflow-hidden" @click="goToDetailsPage">
             <img :src="image" :alt="product.product_name"
                 class="object-contain w-full h-full transition-transform duration-300 group-hover:scale-105" />
 
@@ -19,15 +19,16 @@
             </div>
 
             <!-- Hover Add to Cart -->
-            <div class="absolute bottom-0 left-0 right-0 h-1/5 translate-y-full group-hover:translate-y-0
+            <div class="absolute bottom-0 left-0 right-0 h-1/3 translate-y-full group-hover:translate-y-0
         transition-transform duration-300 ease-out
-        bg-blue-100/90 text-blue-700 text-xs font-semibold flex items-center justify-center">
+        bg-blue-100/90 text-blue-700 text-xs font-semibold flex items-center justify-center cursor-pointer"
+                @click.stop="addProductToCart">
                 ADD TO CART
             </div>
         </div>
 
         <!-- Product Details -->
-        <div class="p-3 text-center">
+        <div class="p-3 text-center" @click="goToDetailsPage">
             <h3 class="text-gray-800 font-medium text-sm line-clamp-2 leading-tight">
                 {{ product.product_name }}
             </h3>
@@ -36,17 +37,11 @@
             <!-- Price -->
             <div class="mt-1">
                 <template v-if="hasDiscount">
-                    <p class="text-gray-400 text-xs line-through">
-                        RM{{ product.price }}
-                    </p>
-                    <p class="text-blue-600 font-semibold text-sm">
-                        RM{{ discountedPrice }}
-                    </p>
+                    <p class="text-gray-400 text-xs line-through">RM{{ product.price }}</p>
+                    <p class="text-blue-600 font-semibold text-sm">RM{{ discountedPrice }}</p>
                 </template>
                 <template v-else>
-                    <p class="text-blue-600 font-semibold text-sm">
-                        RM{{ product.price }}
-                    </p>
+                    <p class="text-blue-600 font-semibold text-sm">RM{{ product.price }}</p>
                 </template>
             </div>
         </div>
@@ -54,9 +49,17 @@
 </template>
 
 <script setup>
+import { computed } from 'vue'
+import { useRouter, useRuntimeConfig } from '#imports'
+import { useCart } from '@/composables/useCart'
+import { toast } from 'vue-sonner'
+
 const props = defineProps({
     product: { type: Object, required: true },
 })
+
+const { addToCart } = useCart()
+const router = useRouter()
 
 const hasDiscount = computed(() => {
     const p = props.product
@@ -74,19 +77,28 @@ const discountedPrice = computed(() => {
 
 const discountShort = computed(() => {
     const p = props.product
-    return p.discount_type === 'amount' ? `-${p.discount_amount}` : `-${p.discount_amount}%`
+    return p.discount_type === 'amount' ? `-RM${p.discount_amount}` : `-${p.discount_amount}%`
 })
-
-const product = computed(() => props.product)
 
 const image = computed(() => {
     const config = useRuntimeConfig()
-    return `${config.public.apiBase}/file/${product.value.images[0]}`
+    if (!props.product.images?.length) return ''
+    const img = props.product.images[0]
+    return img.startsWith('http') ? img : `${config.public.apiBase}/file/${img}`
 })
 
 const goToDetailsPage = () => {
-    const router = useRouter()
-    router.push(`/products/${product.value.id}`)
+    router.push(`/products/${props.product.id}`)
+}
+
+const addProductToCart = () => {
+    const finalProduct = {
+        ...props.product,
+        price: discountedPrice.value,
+        original_price: props.product.price,
+    }
+    addToCart(finalProduct, 1)
+    toast.success(`${props.product.product_name} added to cart!`)
 }
 </script>
 
