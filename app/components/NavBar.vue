@@ -214,7 +214,7 @@
                     'scale-90': isScrolled
                 }">
                     <!-- Un Auth User Login-->
-                    <NuxtLink to="/login" v-if="user_role == null"
+                    <NuxtLink to="/auth/login" v-if="user_role == ''"
                         class="text-black font-semibold px-3 py-2 text-sm hover:text-blue-700 hover:underline whitespace-nowrap">
                         Login/Register</NuxtLink>
                     <NuxtLink to="/search" class="text-black p-2 hover:text-blue-700"><i
@@ -226,7 +226,7 @@
                     </NuxtLink>
 
                     <!-- Profile Dropdown -->
-                    <div class="relative" v-if="user_role !== null">
+                    <div class="relative" v-if="user_role !== ''">
                         <button @click="setDesktopDropdown('profile')" class="text-black p-2 hover:text-blue-700">
                             <i class="pi pi-user text-xl"></i>
                         </button>
