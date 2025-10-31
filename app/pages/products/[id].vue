@@ -40,7 +40,8 @@
                     <!-- Stock Status -->
                     <div v-if="stockQty > 0" class="mb-4 flex items-center gap-2">
                         <span class="inline-block w-2 h-2 bg-green-500 rounded-full"></span>
-                        <span class="text-green-600 font-medium">In Stock</span>
+                        <span class="text-green-600 font-medium">In Stock</span><span
+                            class="text-blue-600 font-medium ml-4">{{ stockQty }} available</span>
                     </div>
 
                     <!-- Quantity Selector & Buttons -->
@@ -322,6 +323,12 @@ const handleAddToCart = () => {
         return // stop execution
     }
 
+    if(stockQty.value > 0 && quantity.value > stockQty.value) {
+        quantity_error.value = `Only ${stockQty.value} unit(s) available in stock.`
+        toast.error(`You can only add up to ${stockQty.value} unit(s) to cart.`)
+        return
+    }
+
     const productData = {
         id: id,
         product_name: product_name.value,
@@ -344,6 +351,12 @@ const buyNow = () => {
         quantity_error.value = `Minimum order quantity is ${moq.value}`
         toast.error(`Please order at least ${moq.value} units.`)
         return // stop execution
+    }
+
+    if(stockQty.value > 0 && quantity.value > stockQty.value) {
+        quantity_error.value = `Only ${stockQty.value} unit(s) available in stock.`
+        toast.error(`You can only add up to ${stockQty.value} unit(s) to cart.`)
+        return
     }
 
     const productData = {
