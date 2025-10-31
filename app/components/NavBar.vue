@@ -238,7 +238,7 @@
                             class="absolute z-20 right-0 mt-2 w-48 bg-white rounded-md shadow-lg border border-blue-100"
                             @mouseleave="desktopDropdown = ''">
                             <!-- Customer Orders -->
-                            <NuxtLink to="/purchases" v-if="user_role == 2"
+                            <NuxtLink to="/purchases" v-if="user_role !== ''"
                                 :class="[isRoute('/purchases') ? 'text-blue-600' : 'text-black', 'font-semibold block px-4 py-2 text-sm hover:bg-blue-50 border-b border-gray-200']">
                                 My Purchases
                             </NuxtLink>
@@ -406,8 +406,12 @@
                         </div>
                     </div>
 
-                    <button @click="checkout"
-                        class="w-full bg-gradient-to-r from-blue-600 to-blue-700 text-white py-3.5 rounded-lg font-bold hover:from-blue-700 hover:to-blue-800 transition-all shadow-md hover:shadow-lg uppercase text-sm tracking-wide">
+                    <button @click="checkout" :disabled="!user_role" :class="[
+                        'w-full py-3.5 rounded-lg font-bold uppercase text-sm tracking-wide flex items-center justify-center gap-2 transition-all shadow-md',
+                        user_role
+                            ? 'bg-gradient-to-r from-blue-600 to-blue-700 text-white hover:from-blue-700 hover:to-blue-800 hover:shadow-lg'
+                            : 'bg-gray-300 text-gray-500 cursor-not-allowed opacity-70 shadow-none'
+                    ]">
                         <i class="pi pi-shopping-bag mr-2"></i>
                         Proceed to Checkout
                     </button>
@@ -446,9 +450,7 @@ const formatPrice = (value) => {
 }
 
 const checkout = () => {
-    toast.info('Proceeding to checkout...')
-    // Navigate to checkout page if needed
-    // navigateTo('/checkout')
+    router.push('/checkout');
 }
 
 // For mobile item dropdowns

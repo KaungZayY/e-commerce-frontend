@@ -377,9 +377,9 @@ const fetchData = async () => {
         stockQty.value = response.product?.qty || 0;
         is_favorite.value = response.product?.is_favorited || false;
         category_id.value = response.product?.category_id || '';
-        console.log(response)
+        // console.log(response)
     } catch (error) {
-        console.log(error)
+        // console.log(error)
         toast.error('Failed to load product info.')
     } finally {
         spinner.value = false

@@ -1,6 +1,6 @@
 <template>
-    <button :disabled="loading" @click="emit('click')" :class="[
-        'flex items-center justify-center gap-2 rounded-md transition-colors duration-200 disabled:opacity-70',
+    <button :disabled="loading || disabled" @click="!loading && !disabled && emit('click')" :class="[
+        'flex items-center justify-center gap-2 rounded-md transition-colors duration-200 disabled:opacity-70 disabled:cursor-not-allowed',
         sizeClass,
         variantClass,
         label ? 'w-full px-4 py-2 text-white' : 'p-2' // compact style if no label
@@ -22,6 +22,7 @@ const props = defineProps<{
     label?: string
     loadingLabel?: string
     loading?: boolean
+    disabled?: boolean
     icon?: string
     variant?: 'primary' | 'danger' | 'neutral'
     size?: 'sm' | 'md' | 'lg'

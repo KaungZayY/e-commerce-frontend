@@ -35,7 +35,7 @@ export function useCart() {
     }
 
     saveCart();
-    isCartOpen.value = true;
+    // isCartOpen.value = true;
   };
 
   const removeFromCart = (id) => {
