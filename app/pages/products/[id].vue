@@ -45,7 +45,7 @@
 
                     <!-- Quantity Selector & Buttons -->
                     <div class="space-y-3 mb-6">
-                        <div class="flex items-center gap-2">
+                        <div v-if="category_id !== 21 && category_id !== 22" class="flex items-center gap-2">
                             <span class="text-gray-700 font-medium min-w-[80px]">Quantity:</span>
                             <div class="flex items-center border-2 border-gray-300 rounded-lg overflow-hidden">
                                 <button @click="decreaseQty"
@@ -59,6 +59,9 @@
                                     +
                                 </button>
                             </div>
+                        </div>
+                        <div v-else>
+                            <QtyInput id="quantity" label="Quantity:" v-model="quantity" :error="moq_error ? moq_error : ''" />
                         </div>
 
                         <div class="flex gap-3">
@@ -148,6 +151,7 @@ import Recommended from '~/components/Products/Recommended.vue';
 const spinner = ref(false);
 const route = useRoute()
 const id = Number(route.params.id)
+const moq_error = ref('')
 
 // Import cart composable
 const { addToCart } = useCart()
@@ -257,6 +261,7 @@ const discount_amount = ref('')
 const quantity = ref(1)
 const stockQty = ref(0)
 const is_favorite = ref(false)
+const moq = ref(null);
 
 // Discount calculations
 const hasDiscount = computed(() => {
@@ -306,6 +311,15 @@ const decreaseQty = () => {
 
 // Action handlers
 const handleAddToCart = () => {
+    moq_error.value = null // clear old errors
+
+    // 🧩 Check for MOQ restriction for category 21 or 22
+    if ((category_id.value === 21 || category_id.value === 22) && quantity.value < moq.value) {
+        moq_error.value = `Minimum order quantity is ${moq.value}`
+        toast.error(`Please order at least ${moq.value} units.`)
+        return // stop execution
+    }
+
     const productData = {
         id: id,
         product_name: product_name.value,
@@ -377,6 +391,7 @@ const fetchData = async () => {
         stockQty.value = response.product?.qty || 0;
         is_favorite.value = response.product?.is_favorited || false;
         category_id.value = response.product?.category_id || '';
+        moq.value = response.product?.moq || null;
         // console.log(response)
     } catch (error) {
         // console.log(error)
