@@ -1,12 +1,12 @@
 <template>
-    <div class="w-full">
-        <h3 class="font-semibold text-gray-800 mb-4">FILTER BY PRICE</h3>
+    <div class="w-4/5">
+        <h3 class="font-semibold text-gray-800 mb-3 text-sm">FILTER BY PRICE</h3>
 
         <!-- Dual Range Slider -->
-        <div class="px-2 mb-6">
-            <div class="relative h-2 bg-gray-200 rounded-full">
+        <div class="px-2 mb-4">
+            <div class="relative h-1.5 bg-gray-200 rounded-full">
                 <!-- Active range track -->
-                <div class="absolute h-2 bg-blue-600 rounded-full" :style="{
+                <div class="absolute h-1.5 bg-blue-600 rounded-full" :style="{
                     left: minPercent + '%',
                     right: (100 - maxPercent) + '%'
                 }"></div>
@@ -23,37 +23,38 @@
 
         <!-- Price Display -->
         <div class="flex items-center justify-between mb-4">
-            <div class="text-sm text-gray-700">
+            <div class="text-xs text-gray-700">
                 Price: <span class="font-semibold">RM{{ minValue }}</span> — <span class="font-semibold">RM{{ maxValue
-                    }}</span>
+                }}</span>
             </div>
             <button @click="applyFilter"
-                class="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded hover:bg-blue-700 transition-colors">
+                class="px-3 py-1.5 bg-blue-600 text-white text-xs font-medium rounded hover:bg-blue-700 transition-colors">
                 FILTER
             </button>
         </div>
 
         <!-- Stock Status -->
-        <div class="mt-8">
-            <h3 class="font-semibold text-gray-800 mb-4">STOCK STATUS</h3>
+        <div class="mt-6">
+            <h3 class="font-semibold text-gray-800 mb-3 text-sm">STOCK STATUS</h3>
 
-            <div class="space-y-3">
+            <div class="space-y-2">
                 <label class="flex items-center cursor-pointer group">
                     <input type="checkbox" v-model="stockFilters.onSale" @change="applyStockFilter"
-                        class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500" />
-                    <span class="ml-2 text-gray-700 group-hover:text-blue-600 transition-colors">On sale</span>
+                        class="w-3.5 h-3.5 text-blue-600 border-gray-300 rounded focus:ring-blue-500" />
+                    <span class="ml-2 text-sm text-gray-700 group-hover:text-blue-600 transition-colors">On sale</span>
                 </label>
 
                 <label class="flex items-center cursor-pointer group">
                     <input type="checkbox" v-model="stockFilters.inStock" @change="applyStockFilter"
-                        class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500" />
-                    <span class="ml-2 text-gray-700 group-hover:text-blue-600 transition-colors">In stock</span>
+                        class="w-3.5 h-3.5 text-blue-600 border-gray-300 rounded focus:ring-blue-500" />
+                    <span class="ml-2 text-sm text-gray-700 group-hover:text-blue-600 transition-colors">In stock</span>
                 </label>
 
                 <label class="flex items-center cursor-pointer group">
                     <input type="checkbox" v-model="stockFilters.onBackorder" @change="applyStockFilter"
-                        class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500" />
-                    <span class="ml-2 text-gray-700 group-hover:text-blue-600 transition-colors">On backorder</span>
+                        class="w-3.5 h-3.5 text-blue-600 border-gray-300 rounded focus:ring-blue-500" />
+                    <span class="ml-2 text-sm text-gray-700 group-hover:text-blue-600 transition-colors">On
+                        backorder</span>
                 </label>
             </div>
         </div>
@@ -144,7 +145,7 @@ watch(() => [props.min, props.max], ([newMin, newMax]) => {
 .range-slider {
     position: absolute;
     width: 100%;
-    height: 2px;
+    height: 1.5px;
     top: 0;
     background: transparent;
     appearance: none;
@@ -155,25 +156,25 @@ watch(() => [props.min, props.max], ([newMin, newMax]) => {
 .range-slider::-webkit-slider-thumb {
     appearance: none;
     -webkit-appearance: none;
-    width: 18px;
-    height: 18px;
+    width: 16px;
+    height: 16px;
     background: #2563eb;
     border: 2px solid white;
     border-radius: 50%;
     cursor: pointer;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
     pointer-events: all;
     position: relative;
 }
 
 .range-slider::-moz-range-thumb {
-    width: 18px;
-    height: 18px;
+    width: 16px;
+    height: 16px;
     background: #2563eb;
     border: 2px solid white;
     border-radius: 50%;
     cursor: pointer;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
     pointer-events: all;
 }
 

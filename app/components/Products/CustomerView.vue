@@ -1,7 +1,7 @@
 <template>
-    <div class="flex px-20 py-8 gap-4">
+    <div class="flex px-40 py-8 gap-2">
         <!-- Sidebar Filters (optional) -->
-        <div class="w-1/5" v-if="showPriceFilter">
+        <div class="w-1/5 mt-12" v-if="showPriceFilter">
             <PriceRangeFilter min="0" max="5000"
                 @filter="handleFilter" />
         </div>
@@ -21,7 +21,7 @@
                 <p class="text-gray-600">No products found.</p>
             </div>
             <div v-else>
-                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
                     <ProductCard v-for="product in products" :key="product.id" :product="product" />
                 </div>
             </div>
