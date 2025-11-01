@@ -8,13 +8,14 @@
 
             <!-- HOT Badge -->
             <div v-if="product.is_popular === 'Yes'"
-                class="absolute top-2 left-2 min-w-[60px] min-h-[60px] flex items-center justify-center bg-red-600 text-white text-[10px] font-bold rounded-full shadow">
+                class="absolute top-0 left-4 w-10 h-12 flex items-center justify-center bg-red-600 text-white text-xs font-bold shadow-md"
+                style="clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 85%, 0 100%);">
                 HOT
             </div>
 
             <!-- Discount Badge -->
             <div v-if="hasDiscount"
-                class="absolute top-2 right-2 min-w-[60px] min-h-[60px] flex items-center justify-center bg-blue-600 text-white text-xs font-bold rounded-full shadow">
+                class="absolute top-2 right-2 min-w-[60px] py-1 flex items-center justify-center bg-orange-500 text-white text-xs rounded-full shadow">
                 {{ discountShort }}
             </div>
 
