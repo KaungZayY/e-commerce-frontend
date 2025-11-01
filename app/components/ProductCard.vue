@@ -8,13 +8,13 @@
 
             <!-- HOT Badge -->
             <div v-if="product.is_popular === 'Yes'"
-                class="absolute top-2 left-2 w-8 h-8 flex items-center justify-center bg-red-600 text-white text-[10px] font-bold rounded-full shadow">
+                class="absolute top-2 left-2 min-w-[60px] min-h-[60px] flex items-center justify-center bg-red-600 text-white text-[10px] font-bold rounded-full shadow">
                 HOT
             </div>
 
             <!-- Discount Badge -->
             <div v-if="hasDiscount"
-                class="absolute top-2 right-2 w-8 h-8 flex items-center justify-center bg-blue-600 text-white text-[10px] font-bold rounded-full shadow">
+                class="absolute top-2 right-2 min-w-[60px] min-h-[60px] flex items-center justify-center bg-blue-600 text-white text-xs font-bold rounded-full shadow">
                 {{ discountShort }}
             </div>
 
@@ -37,11 +37,11 @@
             <!-- Price -->
             <div class="mt-1">
                 <template v-if="hasDiscount">
-                    <p class="text-gray-400 text-xs line-through">RM{{ product.price }}</p>
-                    <p class="text-blue-600 font-semibold text-sm">RM{{ discountedPrice }}</p>
+                    <p class="text-gray-400 text-xs line-through">RM{{ formatPrice(product.price) }}</p>
+                    <p class="text-blue-600 font-semibold text-sm">RM{{ formatPrice(discountedPrice) }}</p>
                 </template>
                 <template v-else>
-                    <p class="text-blue-600 font-semibold text-sm">RM{{ product.price }}</p>
+                    <p class="text-blue-600 font-semibold text-sm">RM{{ formatPrice(product.price) }}</p>
                 </template>
             </div>
         </div>
@@ -70,9 +70,9 @@ const discountedPrice = computed(() => {
     const p = props.product
     const price = Number(p.price)
     const discount = Number(p.discount_amount)
-    if (p.discount_type === 'amount') return (price - discount).toFixed(2)
-    if (p.discount_type === 'percentage') return (price - price * (discount / 100)).toFixed(2)
-    return p.price
+    if (p.discount_type === 'amount') return price - discount
+    if (p.discount_type === 'percentage') return price - price * (discount / 100)
+    return price
 })
 
 const discountShort = computed(() => {
@@ -86,6 +86,12 @@ const image = computed(() => {
     const img = props.product.images[0]
     return img.startsWith('http') ? img : `${config.public.apiBase}/file/${img}`
 })
+
+// Helper function to format price - only show decimals if necessary
+const formatPrice = (price) => {
+    const num = Number(price)
+    return num % 1 === 0 ? num.toString() : num.toFixed(2)
+}
 
 const goToDetailsPage = () => {
     router.push(`/products/${props.product.id}`)

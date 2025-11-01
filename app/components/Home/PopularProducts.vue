@@ -5,7 +5,7 @@
         </h1>
 
         <Spinner v-if="loading" />
-        <div v-else class="px-40">
+        <div v-else class="px-40 mb-10">
             <ProductSlider :products="products" />
         </div>
     </div>

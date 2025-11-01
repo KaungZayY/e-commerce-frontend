@@ -272,6 +272,15 @@ const setLink = () => {
     padding-left: 1.5em;
 }
 
+/* ADD THESE TWO LINES */
+.ProseMirror ul {
+    list-style-type: disc;
+}
+
+.ProseMirror ol {
+    list-style-type: decimal;
+}
+
 .ProseMirror li {
     margin: 0.25em 0;
 }
@@ -346,6 +355,4 @@ const setLink = () => {
     pointer-events: none;
     height: 0;
 }
-
-/* Text alignment styles removed */
 </style>

@@ -22,13 +22,13 @@
                 }">
                     <div class="flex items-center space-x-1 text-sm">
                         <NuxtLink to="/"
-                            :class="[isActiveHome ? 'text-blue-600 font-bold underline' : 'text-black font-bold', 'px-3 py-2 rounded-md text-sm transition-colors hover:underline whitespace-nowrap']">
+                            :class="[isActiveHome ? 'text-blue-600 font-bold underline' : 'text-black', 'px-3 py-2 rounded-md text-sm transition-colors hover:underline whitespace-nowrap']">
                             Home</NuxtLink>
 
                         <!-- Shop -->
                         <div class="relative">
                             <button @click="setDesktopDropdown('shop')"
-                                :class="[isActiveShop ? 'text-blue-600 font-bold underline' : 'text-black font-bold', 'flex items-center px-3 py-2 rounded-md text-sm transition-colors whitespace-nowrap hover:underline']">
+                                :class="[isActiveShop ? 'text-blue-600 font-bold underline' : 'text-black', 'flex items-center px-3 py-2 rounded-md text-sm transition-colors whitespace-nowrap hover:underline']">
                                 Shop
                                 <svg class="ml-1 w-4 h-4" fill="none" stroke="currentColor" stroke-width="2"
                                     viewBox="0 0 24 24">
@@ -52,7 +52,7 @@
                         <!-- Mobile Phones -->
                         <div class="relative">
                             <button @click="setDesktopDropdown('phones')"
-                                :class="[isActivePhones ? 'text-blue-600 font-bold underline' : 'text-black font-bold', 'flex items-center px-3 py-2 rounded-md text-sm transition-colors whitespace-nowrap hover:underline']">
+                                :class="[isActivePhones ? 'text-blue-600 font-bold underline' : 'text-black', 'flex items-center px-3 py-2 rounded-md text-sm transition-colors whitespace-nowrap hover:underline']">
                                 Mobile Phones
                                 <svg class="ml-1 w-4 h-4" fill="none" stroke="currentColor" stroke-width="2"
                                     viewBox="0 0 24 24">
@@ -78,7 +78,7 @@
                         <!-- Accessories Tab -->
                         <div class="relative">
                             <button @click="setDesktopDropdown('accessories')"
-                                :class="[isActiveAccessories ? 'text-blue-600 font-bold underline' : 'text-black font-bold', 'flex items-center px-3 py-2 rounded-md text-sm transition-colors whitespace-nowrap hover:underline']">
+                                :class="[isActiveAccessories ? 'text-blue-600 font-bold underline' : 'text-black', 'flex items-center px-3 py-2 rounded-md text-sm transition-colors whitespace-nowrap hover:underline']">
                                 Accessories
                                 <svg class="ml-1 w-4 h-4" fill="none" stroke="currentColor" stroke-width="2"
                                     viewBox="0 0 24 24">
@@ -105,7 +105,7 @@
                         <!-- Electronics Tab -->
                         <div class="relative">
                             <button @click="setDesktopDropdown('electronics')"
-                                :class="[isActiveElectronics ? 'text-blue-600 font-bold underline' : 'text-black font-bold', 'flex items-center px-3 py-2 rounded-md text-sm transition-colors whitespace-nowrap hover:underline']">
+                                :class="[isActiveElectronics ? 'text-blue-600 font-bold underline' : 'text-black', 'flex items-center px-3 py-2 rounded-md text-sm transition-colors whitespace-nowrap hover:underline']">
                                 Electronics
                                 <svg class="ml-1 w-4 h-4" fill="none" stroke="currentColor" stroke-width="2"
                                     viewBox="0 0 24 24">
@@ -132,7 +132,7 @@
                         <!-- Networking Tab -->
                         <div class="relative">
                             <button @click="setDesktopDropdown('networking')"
-                                :class="[isActiveNetworking ? 'text-blue-600 font-bold underline' : 'text-black font-bold', 'flex items-center px-3 py-2 rounded-md text-sm transition-colors whitespace-nowrap hover:underline']">
+                                :class="[isActiveNetworking ? 'text-blue-600 font-bold underline' : 'text-black', 'flex items-center px-3 py-2 rounded-md text-sm transition-colors whitespace-nowrap hover:underline']">
                                 Networking
                                 <svg class="ml-1 w-4 h-4" fill="none" stroke="currentColor" stroke-width="2"
                                     viewBox="0 0 24 24">
@@ -159,7 +159,7 @@
                         <!-- Deals Tab -->
                         <div class="relative">
                             <button @click="setDesktopDropdown('deals')"
-                                :class="[isActiveDeals ? 'text-blue-600 font-bold underline' : 'text-black font-bold', 'flex items-center px-3 py-2 rounded-md text-sm transition-colors whitespace-nowrap hover:underline']">
+                                :class="[isActiveDeals ? 'text-blue-600 font-bold underline' : 'text-black', 'flex items-center px-3 py-2 rounded-md text-sm transition-colors whitespace-nowrap hover:underline']">
                                 Deals
                                 <svg class="ml-1 w-4 h-4" fill="none" stroke="currentColor" stroke-width="2"
                                     viewBox="0 0 24 24">
@@ -183,7 +183,7 @@
                         <!-- Wholesale Tab -->
                         <div class="relative">
                             <button @click="setDesktopDropdown('wholesale')"
-                                :class="[isActiveWholesale ? 'text-blue-600 font-bold underline' : 'text-black font-bold', 'flex items-center px-3 py-2 rounded-md text-sm transition-colors whitespace-nowrap hover:underline']">
+                                :class="[isActiveWholesale ? 'text-blue-600 font-bold underline' : 'text-black', 'flex items-center px-3 py-2 rounded-md text-sm transition-colors whitespace-nowrap hover:underline']">
                                 Wholesale
                                 <svg class="ml-1 w-4 h-4" fill="none" stroke="currentColor" stroke-width="2"
                                     viewBox="0 0 24 24">

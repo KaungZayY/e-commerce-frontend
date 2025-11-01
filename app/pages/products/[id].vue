@@ -3,14 +3,14 @@
         <div class="max-w-7xl mx-auto px-6 py-8">
             <BreadCrumb :items="breadcrumbItems" class="mb-6" />
 
-            <div class="flex gap-8">
+            <div class="flex gap-8 bg-white p-8 rounded-lg shadow-sm">
                 <!-- Left: Image Slider -->
                 <div class="w-1/2">
                     <ImageSlider :images="images" />
                 </div>
 
                 <!-- Right: Product Information -->
-                <div class="w-1/2 bg-white p-8 rounded-lg shadow-sm">
+                <div class="w-1/2 ">
                     <!-- Product Title -->
                     <h1 class="text-3xl font-bold text-gray-900 mb-4">
                         {{ product_name }}
@@ -123,9 +123,10 @@
             </div>
 
             <!-- Description Section -->
-            <div class="mt-8 bg-white p-8 rounded-lg shadow-sm">
+            <div class="mt-8">
                 <h2 class="text-2xl font-bold text-gray-900 mb-4">Product Description</h2>
-                <div class="prose max-w-none text-gray-700" v-html="description"></div>
+                <div class="[&_ul]:list-disc [&_ul]:pl-6 [&_li]:mb-1" v-html="description"></div>
+
             </div>
 
             <div class="flex gap-8">

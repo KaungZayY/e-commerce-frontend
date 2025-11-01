@@ -1,7 +1,7 @@
 <template>
     <div class="relative w-full max-w-2xl mx-auto">
         <!-- Main Image Display -->
-        <div class="relative w-full bg-gray-100 rounded-lg overflow-hidden flex items-center justify-center"
+        <div class="relative w-full rounded-lg overflow-hidden flex items-center justify-center"
             style="aspect-ratio: 1 / 1; max-height: 600px;">
             <img v-if="fullImagePaths.length > 0" :src="fullImagePaths[currentIndex]" :alt="`Image ${currentIndex + 1}`"
                 class="max-w-[80%] max-h-[90%] object-contain transition-opacity duration-300"

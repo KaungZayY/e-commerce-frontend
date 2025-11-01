@@ -20,10 +20,10 @@
                         <p v-if="banner.subtext" class="text-lg mb-5 text-gray-500">
                             {{ banner.subtext }}
                         </p>
-                        <button v-if="banner.buttonText"
-                            class="bg-blue-600 hover:bg-blue-800 text-white px-8 py-3 text-base font-bold rounded cursor-pointer transition-colors">
+                        <NuxtLink v-if="banner.buttonText" :to="banner.buttonLink"
+                            class="inline-block bg-blue-600 hover:bg-blue-800 text-white px-8 py-3 text-base font-bold rounded cursor-pointer transition-colors">
                             {{ banner.buttonText }}
-                        </button>
+                        </NuxtLink>
                     </div>
                 </div>
             </div>
@@ -66,6 +66,7 @@ const banners = [
         subtitle: 'Up to 50% off on selected items',
         subtext: 'Limited time offer on all summer essentials. Shop now and save big on your favorite styles!',
         buttonText: 'Shop Now',
+        buttonLink: '/shop/all-products',
         textPosition: {
             bottom: '10%',
             left: '10%'
@@ -73,28 +74,28 @@ const banners = [
         textClasses: 'text-left'
     },
     {
-        image: '/images/banners/banner_2.jpeg',
+        image: '/images/banners/banner_2.jpg',
         alt: 'Banner 2',
         title: 'New Arrivals',
         subtitle: 'Discover the latest trends',
         buttonText: 'Explore',
+        buttonLink: '/shop/new-arrivals',
         textPosition: {
-            top: '50%',
+            bottom: '10%',
             left: '10%',
-            transform: 'translateY(-50%)'
         },
         textClasses: 'text-left'
     },
     {
-        image: '/images/banners/banner_3.jpeg',
+        image: '/images/banners/banner_3.jpg',
         alt: 'Banner 3',
         title: 'Special Offer',
-        subtitle: 'Free shipping on orders over $100',
+        subtitle: 'Up to 30% off on electronics with free shipping',
         buttonText: 'Learn More',
+        buttonLink: '/deals/flash',
         textPosition: {
-            top: '50%',
-            left: '10%',
-            transform: 'translateY(-50%)'
+            bottom: '10%',
+            right: '2%',
         },
         textClasses: 'text-left'
     }
