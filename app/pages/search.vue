@@ -34,7 +34,7 @@ const spinner = ref(false)
 const products = ref([])
 const loading = ref(false)
 const currentPage = ref(1)
-const pageSize = ref(10)
+const pageSize = ref(12)
 const totalItems = ref(0)
 const totalPages = computed(() => Math.ceil(totalItems.value / pageSize.value))
 
