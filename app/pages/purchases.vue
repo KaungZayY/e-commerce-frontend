@@ -27,80 +27,93 @@
                 class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
                 <!-- Header -->
                 <div
-                    class="bg-gray-50 px-5 py-3 border-b border-gray-200 flex flex-wrap justify-between items-center gap-3">
+                    class="bg-gray-50 px-3 sm:px-5 py-3 border-b border-gray-200 flex flex-wrap justify-between items-center gap-2 sm:gap-3">
                     <div>
-                        <h3 class="font-semibold text-gray-800 text-lg">Order {{ order.generated_id }}</h3>
-                        <p class="text-sm text-gray-500">{{ formatDate(order.created_at) }}</p>
+                        <h3 class="font-semibold text-gray-800 text-base sm:text-lg">Order {{ order.generated_id }}</h3>
+                        <p class="text-xs sm:text-sm text-gray-500">{{ formatDate(order.created_at) }}</p>
                     </div>
-                    <div class="flex items-center gap-4">
+                    <div class="flex items-center gap-2 sm:gap-4 flex-wrap">
                         <span :class="getStatusClass(order.status)"
-                            class="px-3 py-1 rounded-full text-sm font-medium capitalize">
+                            class="px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm font-medium capitalize">
                             {{ order.status }}
                         </span>
                         <div class="text-right">
                             <p class="text-xs text-gray-500">Total</p>
-                            <p class="text-lg font-bold text-gray-900">${{ order.total_amount.toFixed(2) }}</p>
+                            <p class="text-base sm:text-lg font-bold text-gray-900">RM{{ order.total_amount.toFixed(2)
+                                }}</p>
                         </div>
                     </div>
                 </div>
 
                 <!-- Products -->
-                <div class="px-5 py-4">
+                <div class="px-3 sm:px-5 py-4">
                     <h4 class="font-medium text-gray-700 text-sm mb-3">Order Items</h4>
                     <div class="space-y-3">
                         <div v-for="product in order.products" :key="product.id"
-                            class="flex gap-4 pb-3 border-b border-gray-100 last:border-0">
+                            class="flex gap-3 sm:gap-4 pb-3 border-b border-gray-100 last:border-0">
                             <img :src="getProductImage(product.images)" :alt="product.product_name"
-                                class="h-12 w-12 object-contain rounded flex-shrink-0" />
-                            <div class="flex-grow">
-                                <h5 class="font-semibold text-gray-800 text-[15px]">{{ product.product_name }}</h5>
-                                <p class="text-sm text-gray-500">Qty: {{ product.pivot.qty }}</p>
-                                <div class="flex items-center gap-2 mt-1.5">
-                                    <span class="text-sm font-medium text-gray-900">${{
+                                class="h-12 w-12 sm:h-16 sm:w-16 object-contain rounded flex-shrink-0" />
+                            <div class="flex-grow min-w-0">
+                                <h5 class="font-semibold text-gray-800 text-sm sm:text-[15px] break-words">{{
+                                    product.product_name }}</h5>
+                                <p class="text-xs sm:text-sm text-gray-500">Qty: {{ product.pivot.qty }}</p>
+                                <div class="flex items-center gap-2 mt-1.5 flex-wrap">
+                                    <span class="text-sm font-medium text-gray-900">RM{{
                                         product.pivot.final_unit_price.toFixed(2)
-                                    }}</span>
-                                    <span v-if="hasDiscount(product)" class="text-sm text-gray-400 line-through">${{
-                                        parseFloat(product.price).toFixed(2)
-                                    }}</span>
+                                        }}</span>
                                     <span v-if="hasDiscount(product)"
-                                        class="text-xs bg-red-100 text-red-700 px-1.5 py-0.5 rounded">
+                                        class="text-xs sm:text-sm text-gray-400 line-through">RM{{
+                                            parseFloat(product.price).toFixed(2)
+                                        }}</span>
+                                    <span v-if="hasDiscount(product)"
+                                        class="text-xs bg-red-100 text-red-700 px-1.5 py-0.5 rounded whitespace-nowrap">
                                         {{ getDiscountLabel(product) }}
                                     </span>
                                 </div>
                             </div>
-                            <div class="text-right text-sm font-semibold text-gray-900">
-                                ${{ product.pivot.subtotal.toFixed(2) }}
+                            <div class="text-right text-sm font-semibold text-gray-900 whitespace-nowrap">
+                                RM{{ product.pivot.subtotal.toFixed(2) }}
                             </div>
                         </div>
                     </div>
                 </div>
 
+                <!-- Payment Method -->
+                <div class="px-3 sm:px-5 py-3 bg-green-50 border-t border-green-100">
+                    <div class="flex items-center gap-2">
+                        <i class="pi pi-money-bill text-green-600 text-sm sm:text-base"></i>
+                        <span class="font-medium text-gray-700 text-sm sm:text-base">Payment Method:</span>
+                        <span class="text-green-700 font-semibold text-sm sm:text-base">Pay by Cash</span>
+                    </div>
+                </div>
+
                 <!-- Customer Info -->
-                <div class="bg-gray-50 px-5 py-3 border-t border-gray-200">
+                <div class="bg-gray-50 px-3 sm:px-5 py-3 border-t border-gray-200">
                     <button @click="toggleCustomerInfo(order.id)"
-                        class="text-blue-600 hover:text-blue-700 font-medium text-sm flex items-center gap-2 w-full justify-center">
+                        class="text-blue-600 hover:text-blue-700 font-medium text-xs sm:text-sm flex items-center gap-2 w-full justify-center">
                         <i :class="isExpanded(order.id) ? 'pi pi-chevron-up' : 'pi pi-chevron-down'"></i>
                         {{ isExpanded(order.id) ? 'Hide' : 'Show' }} Customer Information
                     </button>
 
-                    <div v-if="isExpanded(order.id)" class="mt-3 pt-3 border-t border-gray-100 text-sm text-gray-600">
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div v-if="isExpanded(order.id)"
+                        class="mt-3 pt-3 border-t border-gray-100 text-xs sm:text-sm text-gray-600">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
                             <div>
                                 <h4 class="font-semibold text-gray-700 mb-1">Customer</h4>
-                                <p>{{ order.first_name }} {{ order.last_name }}</p>
-                                <p>{{ order.customer_email }}</p>
+                                <p class="break-words">{{ order.first_name }} {{ order.last_name }}</p>
+                                <p class="break-all">{{ order.customer_email }}</p>
                                 <p>{{ order.customer_phone }}</p>
                             </div>
                             <div>
                                 <h4 class="font-semibold text-gray-700 mb-1">Address</h4>
-                                <p>{{ order.customer_address }}</p>
+                                <p class="break-words">{{ order.customer_address }}</p>
                                 <p>{{ order.city }}, {{ order.state }}</p>
                                 <p>{{ order.postal_code }}</p>
                             </div>
                         </div>
                         <div v-if="order.note" class="mt-3">
                             <h4 class="font-semibold text-gray-700 mb-0.5">Note</h4>
-                            <p>{{ order.note }}</p>
+                            <p class="break-words">{{ order.note }}</p>
                         </div>
                     </div>
                 </div>
