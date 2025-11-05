@@ -47,6 +47,20 @@
                             class="text-blue-600 font-medium ml-4 text-sm sm:text-base">{{ stockQty }} available</span>
                     </div>
 
+                    <!-- Wholesale Notice -->
+                    <div v-if="category_id == 21 || category_id == 22"
+                        class="mb-4 bg-yellow-50 border-l-4 border-yellow-500 p-3 sm:p-4 rounded-r-lg">
+                        <div class="flex items-start gap-2">
+                            <i class="pi pi-info-circle text-yellow-600 mt-0.5"></i>
+                            <div>
+                                <p class="text-yellow-800 font-semibold text-sm sm:text-base mb-1">Wholesale Product</p>
+                                <p class="text-yellow-700 text-xs sm:text-sm">
+                                    This is a wholesale item. Minimum order quantity (MOQ) of {{ moq }} units required.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- Quantity Selector & Buttons -->
                     <div class="space-y-3 mb-4 sm:mb-6">
                         <div v-if="category_id !== 21 && category_id !== 22"

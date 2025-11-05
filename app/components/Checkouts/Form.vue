@@ -75,6 +75,70 @@
                     </div>
                 </div>
 
+                <!-- Payment Methods Section -->
+                <!-- Payment Methods Section -->
+                <div class="border rounded-lg p-3 sm:p-4 mb-4 sm:mb-6">
+                    <h2 class="text-base sm:text-lg font-semibold mb-3 sm:mb-4">Payment Methods</h2>
+
+                    <div class="space-y-2 sm:space-y-3">
+                        <!-- Cash Payment -->
+                        <label
+                            class="flex items-start gap-2 sm:gap-3 p-2.5 sm:p-3 border rounded-lg cursor-pointer hover:bg-gray-50 transition"
+                            :class="payment_method === 'cash' ? 'border-blue-500 bg-blue-50' : 'border-gray-200'">
+                            <input type="radio" name="payment_method" value="cash" v-model="payment_method"
+                                class="mt-0.5 sm:mt-1 w-4 h-4 flex-shrink-0 text-blue-600 focus:ring-blue-500" />
+                            <div class="flex-1 min-w-0">
+                                <div class="flex items-center gap-1.5 sm:gap-2 flex-wrap">
+                                    <i class="pi pi-money-bill text-green-600 text-sm sm:text-base"></i>
+                                    <span class="font-medium text-gray-900 text-sm sm:text-base">Pay by Cash</span>
+                                </div>
+                                <p class="text-xs sm:text-sm text-gray-600 mt-0.5 sm:mt-1">Pay with cash upon delivery
+                                </p>
+                            </div>
+                        </label>
+
+                        <!-- Credit Card Payment (Disabled) -->
+                        <label
+                            class="flex items-start gap-2 sm:gap-3 p-2.5 sm:p-3 border rounded-lg opacity-50 cursor-not-allowed bg-gray-50 border-gray-200">
+                            <input type="radio" name="payment_method" value="credit_card" disabled
+                                class="mt-0.5 sm:mt-1 w-4 h-4 flex-shrink-0 text-gray-400" />
+                            <div class="flex-1 min-w-0">
+                                <div class="flex items-center gap-1.5 sm:gap-2 flex-wrap">
+                                    <i class="pi pi-credit-card text-gray-400 text-sm sm:text-base"></i>
+                                    <span class="font-medium text-gray-500 text-sm sm:text-base">Credit Card
+                                        Payment</span>
+                                    <span
+                                        class="text-xs bg-gray-200 text-gray-600 px-1.5 sm:px-2 py-0.5 rounded-full whitespace-nowrap">Coming
+                                        Soon</span>
+                                </div>
+                                <p class="text-xs sm:text-sm text-gray-500 mt-0.5 sm:mt-1">Currently unavailable</p>
+                            </div>
+                        </label>
+
+                        <!-- Online Banking (Disabled) -->
+                        <label
+                            class="flex items-start gap-2 sm:gap-3 p-2.5 sm:p-3 border rounded-lg opacity-50 cursor-not-allowed bg-gray-50 border-gray-200">
+                            <input type="radio" name="payment_method" value="online_banking" disabled
+                                class="mt-0.5 sm:mt-1 w-4 h-4 flex-shrink-0 text-gray-400" />
+                            <div class="flex-1 min-w-0">
+                                <div class="flex items-center gap-1.5 sm:gap-2 flex-wrap">
+                                    <i class="pi pi-building text-gray-400 text-sm sm:text-base"></i>
+                                    <span class="font-medium text-gray-500 text-sm sm:text-base">Online Banking</span>
+                                    <span
+                                        class="text-xs bg-gray-200 text-gray-600 px-1.5 sm:px-2 py-0.5 rounded-full whitespace-nowrap">Coming
+                                        Soon</span>
+                                </div>
+                                <p class="text-xs sm:text-sm text-gray-500 mt-0.5 sm:mt-1">Currently unavailable</p>
+                            </div>
+                        </label>
+                    </div>
+
+                    <!-- Error Message -->
+                    <p v-if="errors.payment_method" class="text-red-600 text-xs sm:text-sm mt-2">
+                        {{ errors.payment_method[0] }}
+                    </p>
+                </div>
+
                 <div class="w-full flex justify-end">
                     <div class="w-full sm:w-auto sm:min-w-[120px]">
                         <LoadingBtn :label="'Checkout'" :loading-label="'Processing...'" :loading="loading"
@@ -102,6 +166,7 @@ const state = ref('');
 const postal_code = ref('');
 const customer_address = ref('');
 const note = ref('');
+const payment_method = ref('cash');
 
 // Load cart from localStorage
 onMounted(() => {
