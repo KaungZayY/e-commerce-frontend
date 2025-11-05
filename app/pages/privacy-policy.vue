@@ -1,4 +1,5 @@
 <template>
+    <PageBanner :label="title" :breadcrumbItems="breadcrumbItems"/>
     <div class="min-h-screen bg-gray-50">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-10">
             <!-- Header -->
@@ -35,6 +36,12 @@
 </template>
 
 <script setup lang="ts">
+
+const breadcrumbItems = [
+    { label: 'Home', href: '/' },
+    { label: 'Privacy Policy' },
+]
+
 const title = ref<string>('Privacy Policy')
 const time = ref<string>('2025-08-02')
 

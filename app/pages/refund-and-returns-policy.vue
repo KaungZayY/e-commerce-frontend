@@ -1,9 +1,9 @@
 <template>
+    <PageBanner :label="title" :breadcrumbItems="breadcrumbItems"/>
     <div class="min-h-screen bg-gray-50">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-10">
             <!-- Header -->
-            <PolicyHeader :title="title" time="2025-08-02"
-                :description="description" />
+            <PolicyHeader title="" time="2025-08-02" :description="description" />
 
             <!-- Section 1 -->
             <PolicySection title="1. Eligibility for Returns & Refunds" :items="section1Items">
@@ -39,6 +39,11 @@
 </template>
 
 <script setup lang="ts">
+
+const breadcrumbItems = [
+    { label: 'Home', href: '/' },
+    { label: 'Refund & Returns Policy' },
+]
 
 const title = ref<string>('Refund & Returns Policy');
 const description = ref<string>(`At <strong>Tech Gadgets</strong>, we want you to be completely satisfied with your purchase. If you're not happy with an electronic product you've bought from us, this policy outlines the conditions under which you can return or exchange it.`);

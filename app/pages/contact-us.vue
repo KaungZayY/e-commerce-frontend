@@ -1,4 +1,5 @@
 <template>
+    <MapIframe :lat="lat" :lng="lng" :zoom="15" :height="450"/>
     <div class="min-h-screen bg-gray-50">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16">
@@ -24,7 +25,7 @@
                             Call Us
                         </h2>
                         <p class="text-gray-700 font-medium text-base sm:text-lg">
-                            +6011 5576 4508
+                            {{ company_phone }}
                         </p>
                     </div>
 
@@ -34,7 +35,7 @@
                             Email Us
                         </h2>
                         <p class="text-gray-700 font-medium text-base sm:text-lg">
-                            support@techgadgets.deals
+                            {{ company_email }}
                         </p>
                     </div>
 
@@ -135,6 +136,12 @@
 </template>
 
 <script setup lang="ts">
+
+const company_email = 'support@techgadgets.deals'
+const company_phone = '+6011 5576 4508'
+const lat = 3.139
+const lng = 101.6869
+
 const formData = ref({
     name: '',
     email: '',
@@ -145,20 +152,23 @@ const formData = ref({
 })
 
 const sendEmail = () => {
+    const company_email = 'support@techgadgets.deals'
+
     const emailBody = `
+${formData.value.message}
+
+-----------------------------
 Name: ${formData.value.name}
 Email: ${formData.value.email}
 Phone: ${formData.value.phone}
 ${formData.value.company ? `Company: ${formData.value.company}` : ''}
+`.trim()
 
-Message:
-${formData.value.message}
-  `.trim()
-
-    const mailtoLink = `mailto:support@techgadgets.deals?subject=${encodeURIComponent(
+    const mailtoLink = `mailto:${company_email}?subject=${encodeURIComponent(
         formData.value.subject
     )}&body=${encodeURIComponent(emailBody)}`
 
     window.location.href = mailtoLink
 }
+
 </script>

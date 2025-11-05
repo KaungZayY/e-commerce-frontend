@@ -1,8 +1,9 @@
 <template>
+    <PageBanner :label="title" :breadcrumbItems="breadcrumbItems"/>
     <div class="min-h-screen bg-gray-50">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-10">
             <!-- Header -->
-            <PolicyHeader :title="title" :time="time" :description="description" />
+            <PolicyHeader title="" :time="time" :description="description" />
 
             <!-- Sections -->
             <PolicySection title="1. General Terms" :items="generalTerms" />
@@ -20,6 +21,12 @@
 </template>
 
 <script setup lang="ts">
+
+const breadcrumbItems = [
+    { label: 'Home', href: '/' },
+    { label: 'Terms and Conditions' },
+]
+
 const title = ref<string>('Terms and Conditions');
 const description = ref<string>(`Welcome to Tech Gadgets (“we,” “us,” “our”). These Terms and Conditions (“Terms”) govern your use of our website <strong>www.techgadgets.deals</strong> and any related services, including purchases, account registration, and customer support. By accessing or using our website, you agree to comply with these Terms. If you do not agree, please do not use our services.`);
 const time = ref<string>('2025-08-02');
