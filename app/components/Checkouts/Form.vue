@@ -1,25 +1,25 @@
 <template>
-    <div class="min-h-screen bg-gray-50 flex items-center justify-center p-6">
-        <div class="w-full max-w-4xl bg-white p-6 rounded shadow">
-            <div class="relative mb-6 flex items-center justify-center">
+    <div class="min-h-screen bg-gray-50 flex items-center justify-center p-3 sm:p-6">
+        <div class="w-full max-w-4xl bg-white p-4 sm:p-6 rounded shadow">
+            <div class="relative mb-4 sm:mb-6 flex items-center justify-center">
                 <PageTitle label="Order Checkout" />
             </div>
 
             <form @submit.prevent="checkout" class="">
-                <div class="flex gap-3">
+                <div class="flex flex-col sm:flex-row gap-3">
                     <Textbox id="first_name" label="First Name" placeholder="John" v-model="first_name" :required="true"
                         :error="errors.first_name ? errors.first_name[0] : ''" />
                     <Textbox id="last_name" label="Last Name" placeholder="Smith" v-model="last_name" :required="true"
                         :error="errors.last_name ? errors.last_name[0] : ''" />
                 </div>
-                <div class="flex gap-3">
+                <div class="flex flex-col sm:flex-row gap-3">
                     <Textbox id="customer_email" type="email" label="Email" placeholder="john@example.com"
                         v-model="customer_email" :required="true"
                         :error="errors.customer_email ? errors.customer_email[0] : ''" />
                     <Textbox id="customer_phone" label="Phone" placeholder="" v-model="customer_phone" :required="true"
                         :error="errors.customer_phone ? errors.customer_phone[0] : ''" />
                 </div>
-                <div class="flex gap-3">
+                <div class="flex flex-col sm:flex-row gap-3">
                     <Textbox id="city" label="City" placeholder="Kuala Lumpur" v-model="city" :required="true"
                         :error="errors.city ? errors.city[0] : ''" />
                     <Textbox id="state" label="State" placeholder="" v-model="state" :required="true"
@@ -38,44 +38,46 @@
                 </div>
 
                 <!-- Cart Section -->
-                <div class="border rounded-lg p-4 mb-6">
-                    <h2 class="text-lg font-semibold mb-3">Your Cart</h2>
+                <div class="border rounded-lg p-3 sm:p-4 mb-4 sm:mb-6">
+                    <h2 class="text-base sm:text-lg font-semibold mb-3">Your Cart</h2>
                     <div v-if="cart.length > 0">
                         <div v-for="(item, index) in cart" :key="item.id"
-                            class="flex justify-between items-center border-b py-3">
-                            <div class="flex items-center gap-3">
-                                <img :src="item.image" alt="" class="w-16 h-16 object-cover rounded" />
-                                <div>
-                                    <p class="font-medium text-gray-800">
+                            class="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b py-3 gap-2 sm:gap-0">
+                            <div class="flex items-start sm:items-center gap-3 w-full sm:w-auto">
+                                <img :src="item.image" alt=""
+                                    class="w-16 h-16 sm:w-16 sm:h-16 object-cover rounded flex-shrink-0" />
+                                <div class="flex-1 min-w-0">
+                                    <p class="font-medium text-gray-800 text-sm sm:text-base break-words">
                                         {{ item.name }} × {{ item.quantity }}
                                     </p>
-                                    <p class="text-sm text-gray-500">RM{{ item.price.toFixed(2) }} each</p>
+                                    <p class="text-xs sm:text-sm text-gray-500">RM{{ item.price.toFixed(2) }} each</p>
                                 </div>
                             </div>
-                            <p class="font-semibold">RM{{ (item.price * item.quantity).toFixed(2) }}</p>
+                            <p class="font-semibold text-sm sm:text-base self-end sm:self-auto">RM{{ (item.price *
+                                item.quantity).toFixed(2) }}</p>
                         </div>
 
                         <!-- Totals -->
                         <div class="mt-4 border-t pt-3">
-                            <div class="flex justify-between text-gray-700 mb-1">
+                            <div class="flex justify-between text-gray-700 mb-1 text-sm sm:text-base">
                                 <span>Subtotal</span>
                                 <span>RM{{ totalAmount.toFixed(2) }}</span>
                             </div>
-                            <div class="flex justify-between text-lg font-semibold text-blue-700">
+                            <div class="flex justify-between text-base sm:text-lg font-semibold text-blue-700">
                                 <span>Total</span>
                                 <span>RM{{ totalAmount.toFixed(2) }}</span>
                             </div>
                         </div>
                     </div>
 
-                    <div v-else class="text-center text-gray-500 py-6">
+                    <div v-else class="text-center text-gray-500 py-6 text-sm sm:text-base">
                         Your cart is empty.
                     </div>
                 </div>
 
                 <div class="w-full flex justify-end">
-                    <div class="w-20">
-                        <LoadingBtn :label="'Checkout'" :loading-label="'Processing your order...'" :loading="loading"
+                    <div class="w-full sm:w-auto sm:min-w-[120px]">
+                        <LoadingBtn :label="'Checkout'" :loading-label="'Processing...'" :loading="loading"
                             type="submit" />
                     </div>
                 </div>

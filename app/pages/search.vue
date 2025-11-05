@@ -1,7 +1,7 @@
 <template>
     <div class="w-full px-6 lg:px-20 py-8">
         <!-- 🔍 Search Bar -->
-        <div class="flex justify-center">
+        <div class="flex justify-center mb-8">
             <div class="relative w-full max-w-2xl">
                 <i class="pi pi-search absolute left-5 top-1/2 -translate-y-1/2 text-gray-400 text-xl"></i>
                 <input type="text" v-model="search" placeholder="Search for products..."
@@ -11,7 +11,8 @@
 
         <!-- 🧭 Pagination + Product Grid -->
         <div>
-            <div class="flex justify-end mb-4">
+            <!-- Hide pagination on mobile top (optional UX improvement) -->
+            <div class="hidden sm:flex justify-end mb-4">
                 <Pagination :current-page="currentPage" :total-pages="totalPages" @change-page="goToPage" />
             </div>
 
@@ -20,12 +21,17 @@
             <div v-else class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                 <ProductCard v-for="product in products" :key="product.id" :product="product" />
             </div>
+
+            <!-- Pagination bottom (visible on all screens) -->
+            <div class="flex justify-center mt-8">
+                <Pagination :current-page="currentPage" :total-pages="totalPages" @change-page="goToPage" />
+            </div>
         </div>
     </div>
 </template>
 
 <script setup>
-import { ref, computed, watch } from 'vue'
+import { ref, computed, watch, onMounted, onUnmounted } from 'vue'
 import { toast } from 'vue-sonner'
 
 // 🔹 States
@@ -37,8 +43,14 @@ const currentPage = ref(1)
 const pageSize = ref(12)
 const totalItems = ref(0)
 const totalPages = computed(() => Math.ceil(totalItems.value / pageSize.value))
-
 let debounceTimer = null
+
+// 🔹 Detect mobile
+const isMobile = ref(false)
+const checkScreenSize = () => {
+    isMobile.value = window.innerWidth < 640
+    pageSize.value = isMobile.value ? 6 : 12
+}
 
 // 🔹 Fetch Products
 const fetchData = async () => {
@@ -59,7 +71,8 @@ const fetchData = async () => {
         products.value = response.products.data.map((item) => ({
             id: item.id,
             images: item.images,
-            product_image: item.images && item.images.length > 0 ? item.images[0] : null,
+            product_image:
+                item.images && item.images.length > 0 ? item.images[0] : null,
             product_name: item.product_name,
             price: item.price,
             qty: item.qty,
@@ -80,11 +93,11 @@ const fetchData = async () => {
     }
 }
 
-// 🔹 Debounce search (2 seconds)
-watch(search, (newVal, oldVal) => {
+// 🔹 Debounce search (1 second)
+watch(search, () => {
     clearTimeout(debounceTimer)
     debounceTimer = setTimeout(() => {
-        currentPage.value = 1 // reset page when typing new search
+        currentPage.value = 1
         fetchData()
     }, 1000)
 })
@@ -96,4 +109,15 @@ const goToPage = (page) => {
         fetchData()
     }
 }
+
+// 🔹 Lifecycle
+onMounted(() => {
+    checkScreenSize()
+    fetchData()
+    window.addEventListener('resize', checkScreenSize)
+})
+
+onUnmounted(() => {
+    window.removeEventListener('resize', checkScreenSize)
+})
 </script>

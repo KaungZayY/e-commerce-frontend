@@ -3,7 +3,7 @@
         <PageTitle label="Dashboard" />
         <Spinner v-if="loading" />
         <DataTable v-show="!loading" :data="data" :columns="columns" :totalItems="totalItems"
-            :currentPage="currentPage" :pageSize="pageSize" addBtnLabel="Add Product"
+            :currentPage="currentPage" :pageSize="pageSize" addBtnLabel="Add"
             @update:currentPage="updateCurrentPage" @update:pageSize="updatePageSize" @add="router.push('/dashboard/products/create')"
             @view="" @edit="goToEditPage" @delete="confirmDeleteItem" :view="false">
             <SearchBox :columns="search_columns" v-model="search" @search="handleSearch" />

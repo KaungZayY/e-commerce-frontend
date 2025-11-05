@@ -173,7 +173,7 @@
                                     { label: 'Flash Deals', to: '/deals/flash' },
                                 ]" :key="item.to">
                                     <NuxtLink :to="item.to"
-                                        :class="[isRoute(item.to) ? 'text-blue-600' : 'text-black', 'font-semibold block px-4 py-2 text-sm hover:bg-blue-50', idx < 1 ? 'border-b border-gray-200' : '']">
+                                        :class="[isRoute(item.to) ? 'text-blue-600' : 'text-black', 'font-semibold block px-4 py-2 text-sm hover:bg-blue-50']">
                                         {{ item.label }}
                                     </NuxtLink>
                                 </template>
@@ -245,7 +245,7 @@
                             <!-- Admin Access-->
                             <NuxtLink to="/dashboard" v-if="user_role == 1"
                                 :class="[isRoute('/dashboard') ? 'text-blue-600' : 'text-black', 'font-semibold block px-4 py-2 text-sm hover:bg-blue-50 border-b border-gray-200']">
-                                Admin Pannel
+                                Admin Panel
                             </NuxtLink>
                             <div class="p-2">
                                 <LoadingBtn label="Logout" loadingLabel="Logging out..." :loading="loggingOut"
@@ -255,8 +255,26 @@
                     </div>
                 </div>
 
-                <!-- Mobile menu button-->
-                <div class="flex lg:hidden ml-auto">
+                <!-- Mobile: icons left of menu button -->
+                <div class="flex lg:hidden items-center">
+                    <!-- Icons row: placed left of the menu button; small right margin to separate slightly -->
+                    <div class="flex items-center gap-2 mr-2">
+                        <NuxtLink to="/search" class="text-black p-2 hover:text-blue-700">
+                            <i class="pi pi-search text-lg"></i>
+                        </NuxtLink>
+                        <NuxtLink to="/profile/favorite" class="text-black p-2 hover:text-blue-700">
+                            <i class="pi pi-heart text-lg"></i>
+                        </NuxtLink>
+                        <button @click="toggleCart" class="relative text-black p-2 hover:text-blue-700">
+                            <i class="pi pi-shopping-cart text-lg"></i>
+                            <span v-if="totalItems > 0"
+                                class="absolute -top-1 -right-1 bg-blue-600 text-white text-xs font-bold rounded-full w-4 h-4 flex items-center justify-center">
+                                {{ totalItems }}
+                            </span>
+                        </button>
+                    </div>
+
+                    <!-- Mobile menu button -->
                     <button @click="mobileOpen = !mobileOpen"
                         class="inline-flex items-center justify-center p-2 rounded-md text-black hover:text-blue-800 focus:outline-none">
                         <svg v-if="!mobileOpen" class="block h-6 w-6" fill="none" stroke="currentColor"
@@ -273,59 +291,60 @@
         </div>
 
         <!-- Mobile Menu -->
-        <div v-if="mobileOpen" class="lg:hidden px-4 pb-3">
-            <NuxtLink to="/"
+        <div v-if="mobileOpen" class="lg:hidden px-4 pb-3 max-h-[calc(100vh-4rem)] overflow-y-auto">
+            <NuxtLink to="/" @click="mobileOpen = false"
                 :class="[isActiveHome ? 'text-blue-600 font-bold' : 'text-black font-bold', 'block px-3 py-2 rounded-md text-base transition']">
                 Home</NuxtLink>
             <div class="flex flex-col">
                 <TabbedMobileDropdown label="Shop" :active="isActiveShop" :open="mobileDropdown === 'shop'"
-                    @toggle="setMobileDropdown('shop')"
+                    @toggle="setMobileDropdown('shop')" @link-click="mobileOpen = false"
                     :items="[{ label: 'All Products', to: '/shop/all-products' }, { label: 'New Arrivals', to: '/shop/new-arrivals' }, { label: 'Best Sellers', to: '/shop/best-sellers' }]" />
                 <TabbedMobileDropdown label="Mobile Phones" :active="isActivePhones" :open="mobileDropdown === 'phones'"
-                    @toggle="setMobileDropdown('phones')"
+                    @toggle="setMobileDropdown('phones')" @link-click="mobileOpen = false"
                     :items="[{ label: 'Smart Phones', to: '/phones/smart' }, { label: 'Feature Phones', to: '/phones/feature' }, { label: 'Refurbished Phones', to: '/phones/refurbished' }]" />
                 <TabbedMobileDropdown label="Accessories" :active="isActiveAccessories"
-                    :open="mobileDropdown === 'accessories'" @toggle="setMobileDropdown('accessories')"
+                    @toggle="setMobileDropdown('accessories')" @link-click="mobileOpen = false"
+                    :open="mobileDropdown === 'accessories'"
                     :items="[{ label: 'Chargers', to: '/accessories/chargers' }, { label: 'Earphones', to: '/accessories/earphones' }, { label: 'Cases', to: '/accessories/cases' }, { label: 'Powerbanks', to: '/accessories/powerbanks' }]" />
                 <TabbedMobileDropdown label="Electronics" :active="isActiveElectronics"
-                    :open="mobileDropdown === 'electronics'" @toggle="setMobileDropdown('electronics')"
+                    @toggle="setMobileDropdown('electronics')" @link-click="mobileOpen = false"
+                    :open="mobileDropdown === 'electronics'"
                     :items="[{ label: 'Smart Watches', to: '/electronics/smart-watches' }, { label: 'Tablets', to: '/electronics/tablets' }, { label: 'Bluetooth Speakers', to: '/electronics/bluetooth-speakers' }, { label: 'Cameras', to: '/electronics/cameras' }]" />
                 <TabbedMobileDropdown label="Networking" :active="isActiveNetworking"
-                    :open="mobileDropdown === 'networking'" @toggle="setMobileDropdown('networking')"
-                    :items="[{ label: 'Routers Wi-Fi Devices', to: '/networking/routers' }, { label: 'Cables', to: '/networking/cables' }, { label: 'Modems', to: '/networking/modems' }]" />
+                    @toggle="setMobileDropdown('networking')" @link-click="mobileOpen = false"
+                    :open="mobileDropdown === 'networking'"
+                    :items="[{ label: 'Routers', to: '/networking/routers' }, { label: 'Wi-Fi Devices', to: '/networking/wifi-devices' }, { label: 'Cables', to: '/networking/cables' }, { label: 'Modems', to: '/networking/modems' }]" />
                 <TabbedMobileDropdown label="Deals" :active="isActiveDeals" :open="mobileDropdown === 'deals'"
-                    @toggle="setMobileDropdown('deals')"
-                    :items="[{ label: 'Flash Deals', to: '/deals/flash' }, { label: 'Discount Bundles', to: '/deals/discount-bundles' }]" />
+                    @toggle="setMobileDropdown('deals')" @link-click="mobileOpen = false"
+                    :items="[{ label: 'Flash Deals', to: '/deals/flash' }]" />
                 <TabbedMobileDropdown label="Wholesale" :active="isActiveWholesale"
-                    :open="mobileDropdown === 'wholesale'" @toggle="setMobileDropdown('wholesale')"
+                    @toggle="setMobileDropdown('wholesale')" @link-click="mobileOpen = false"
+                    :open="mobileDropdown === 'wholesale'"
                     :items="[{ label: 'Telecom & Mobile Devices', to: '/wholesale/telecom-mobile' }, { label: 'General Wholesales', to: '/wholesale/general' }]" />
 
-                <!-- Mobile: auth + icons -->
-                <NuxtLink to="/login" class="text-black font-semibold px-3 py-2 text-base mt-2">Login/Register
-                </NuxtLink>
-                <div class="flex gap-4 px-3 py-2">
-                    <NuxtLink to="/search" class="text-black p-2 hover:text-blue-700"><i
-                            class="pi pi-search text-lg"></i>
+                <!-- Mobile: auth section -->
+                <div class="border-t border-gray-200 mt-2 pt-2">
+                    <!-- Show Login/Register if not logged in -->
+                    <NuxtLink to="/auth/login" v-if="user_role == ''" @click="mobileOpen = false"
+                        class="text-black font-semibold px-3 py-2 text-base block hover:text-blue-700">
+                        Login/Register
                     </NuxtLink>
-                    <NuxtLink to="/favorites" class="text-black p-2 hover:text-blue-700"><i
-                            class="pi pi-heart text-lg"></i>
-                    </NuxtLink>
-                    <NuxtLink to="/cart" class="text-black p-2 hover:text-blue-700"><i
-                            class="pi pi-shopping-cart text-lg"></i>
-                    </NuxtLink>
-                </div>
 
-                <!-- Mobile Profile Section -->
-                <div class="px-3 py-2 border-t border-gray-200 mt-2">
-                    <NuxtLink to="/profile" class="text-black font-semibold block py-2 hover:text-blue-700">
-                        Profile
-                    </NuxtLink>
-                    <NuxtLink to="/products" class="text-black font-semibold block py-2 hover:text-blue-700">
-                        Products
-                    </NuxtLink>
-                    <div class="mt-2">
-                        <LoadingBtn label="Logout" loadingLabel="Logging out..." :loading="loggingOut" icon="sign-out"
-                            @click="handleLogout" />
+                    <!-- Show Profile Section if logged in -->
+                    <div v-if="user_role !== ''" class="px-3 py-2">
+                        <p class="text-gray-500 text-xs uppercase tracking-wide mb-2">Account</p>
+                        <NuxtLink to="/purchases" @click="mobileOpen = false"
+                            class="text-black font-semibold block py-2 hover:text-blue-700">
+                            My Purchases
+                        </NuxtLink>
+                        <NuxtLink to="/dashboard" v-if="user_role == 1" @click="mobileOpen = false"
+                            class="text-black font-semibold block py-2 hover:text-blue-700">
+                            Admin Panel
+                        </NuxtLink>
+                        <div class="mt-3">
+                            <LoadingBtn label="Logout" loadingLabel="Logging out..." :loading="loggingOut"
+                                icon="sign-out" @click="handleLogout" variant="danger" />
+                        </div>
                     </div>
                 </div>
             </div>
@@ -335,17 +354,17 @@
     <!-- Cart Sidebar -->
     <transition name="slide">
         <div v-if="isCartOpen" class="fixed inset-0 bg-black/40 z-[60] flex justify-end" @click.self="toggleCart">
-            <div class="w-96 bg-white h-full shadow-lg flex flex-col">
+            <div class="w-full sm:w-96 bg-white h-full shadow-lg flex flex-col">
                 <!-- Cart Header -->
-                <div class="flex justify-between items-center p-6 border-b border-gray-200">
-                    <h2 class="text-xl font-bold text-gray-900">Your Cart</h2>
+                <div class="flex justify-between items-center p-4 sm:p-6 border-b border-gray-200">
+                    <h2 class="text-lg sm:text-xl font-bold text-gray-900">Your Cart</h2>
                     <button @click="toggleCart" class="text-gray-500 hover:text-gray-700 transition">
                         <i class="pi pi-times text-2xl"></i>
                     </button>
                 </div>
 
                 <!-- Cart Items -->
-                <div class="flex-1 overflow-y-auto p-4">
+                <div class="flex-1 overflow-y-auto p-3 sm:p-4">
                     <div v-if="cartItems.length === 0"
                         class="flex flex-col items-center justify-center h-full text-center">
                         <i class="pi pi-shopping-cart text-6xl text-gray-300 mb-4"></i>
@@ -353,24 +372,25 @@
                         <p class="text-gray-400 text-sm mt-2">Add some products to get started!</p>
                     </div>
 
-                    <div v-else class="space-y-4">
+                    <div v-else class="space-y-3 sm:space-y-4">
                         <div v-for="item in cartItems" :key="item.id"
-                            class="bg-gray-50 rounded-lg p-4 border border-gray-200">
-                            <div class="flex gap-4">
+                            class="bg-gray-50 rounded-lg p-3 sm:p-4 border border-gray-200">
+                            <div class="flex gap-3 sm:gap-4">
                                 <!-- Product Image -->
                                 <div
-                                    class="w-20 h-20 bg-white rounded-md overflow-hidden border border-gray-200 flex-shrink-0">
+                                    class="w-16 h-16 sm:w-20 sm:h-20 bg-white rounded-md overflow-hidden border border-gray-200 flex-shrink-0">
                                     <img v-if="item.image" :src="item.image" :alt="item.name"
                                         class="w-full h-full object-cover" />
                                     <div v-else class="w-full h-full flex items-center justify-center bg-gray-100">
-                                        <i class="pi pi-image text-gray-400 text-2xl"></i>
+                                        <i class="pi pi-image text-gray-400 text-xl sm:text-2xl"></i>
                                     </div>
                                 </div>
 
                                 <!-- Product Details -->
                                 <div class="flex-1 min-w-0">
                                     <h3 class="text-sm font-semibold text-gray-900 mb-1 truncate">{{ item.name }}</h3>
-                                    <p class="text-lg font-bold text-blue-600">RM{{ formatPrice(item.price) }}</p>
+                                    <p class="text-base sm:text-lg font-bold text-blue-600">RM{{ formatPrice(item.price)
+                                    }}</p>
 
                                     <!-- Quantity Controls -->
                                     <div class="flex items-center gap-2 mt-2">
@@ -379,7 +399,7 @@
                                             <i class="pi pi-minus text-xs"></i>
                                         </button>
                                         <span class="w-10 text-center font-semibold text-gray-900">{{ item.quantity
-                                            }}</span>
+                                        }}</span>
                                         <button @click="updateQuantity(item.id, item.quantity + 1)"
                                             class="w-7 h-7 flex items-center justify-center bg-gray-200 hover:bg-gray-300 rounded transition">
                                             <i class="pi pi-plus text-xs"></i>
@@ -390,7 +410,7 @@
                                 <!-- Remove Button -->
                                 <button @click="removeFromCart(item.id)"
                                     class="text-red-500 hover:text-red-700 transition self-start">
-                                    <i class="pi pi-trash text-lg"></i>
+                                    <i class="pi pi-trash text-base sm:text-lg"></i>
                                 </button>
                             </div>
                         </div>
@@ -398,7 +418,7 @@
                 </div>
 
                 <!-- Cart Footer -->
-                <div v-if="cartItems.length > 0" class="border-t border-gray-200 p-6 bg-gray-50">
+                <div v-if="cartItems.length > 0" class="border-t border-gray-200 p-4 sm:p-6 bg-gray-50">
                     <div class="space-y-3 mb-4">
                         <div class="flex justify-between text-sm">
                             <span class="text-gray-600">Subtotal ({{ totalItems }} items)</span>
@@ -407,7 +427,7 @@
                     </div>
 
                     <button @click="checkout" :disabled="!user_role" :class="[
-                        'w-full py-3.5 rounded-lg font-bold uppercase text-sm tracking-wide flex items-center justify-center gap-2 transition-all shadow-md',
+                        'w-full py-3 sm:py-3.5 rounded-lg font-bold uppercase text-sm tracking-wide flex items-center justify-center gap-2 transition-all shadow-md',
                         user_role
                             ? 'bg-gradient-to-r from-blue-600 to-blue-700 text-white hover:from-blue-700 hover:to-blue-800 hover:shadow-lg'
                             : 'bg-gray-300 text-gray-500 cursor-not-allowed opacity-70 shadow-none'
@@ -415,6 +435,9 @@
                         <i class="pi pi-shopping-bag mr-2"></i>
                         Proceed to Checkout
                     </button>
+                    <p v-if="!user_role" class="text-center text-xs text-gray-500 mt-2">
+                        Please login to checkout
+                    </p>
                 </div>
             </div>
         </div>
@@ -450,23 +473,26 @@ const formatPrice = (value) => {
 }
 
 const checkout = () => {
-    router.push('/checkout');
+    if (user_role.value) {
+        toggleCart()
+        router.push('/checkout')
+    }
 }
 
 // For mobile item dropdowns
-const mobileOpen = ref(false);
-const mobileDropdown = ref('');
+const mobileOpen = ref(false)
+const mobileDropdown = ref('')
 function setMobileDropdown(key) {
-    mobileDropdown.value = mobileDropdown.value === key ? '' : key;
+    mobileDropdown.value = mobileDropdown.value === key ? '' : key
 }
 
 // Desktop dropdowns
-const route = useRoute();
-const router = useRouter();
-const desktopDropdown = ref('');
+const route = useRoute()
+const router = useRouter()
+const desktopDropdown = ref('')
 
 function setDesktopDropdown(key) {
-    desktopDropdown.value = desktopDropdown.value === key ? '' : key;
+    desktopDropdown.value = desktopDropdown.value === key ? '' : key
 }
 
 const user_role = computed(() => {
@@ -477,37 +503,38 @@ const user_role = computed(() => {
 })
 
 // Logout functionality
-const loggingOut = ref(false);
+const loggingOut = ref(false)
 const handleLogout = async () => {
-    loggingOut.value = true;
+    loggingOut.value = true
     try {
         await useApi('/logout', {
             method: 'POST'
-        });
-        localStorage.removeItem('token');
-        localStorage.removeItem('id');
-        localStorage.removeItem('user_name');
-        localStorage.removeItem('user_role');
-        toast.success('Logout Successful!.')
-        router.push('/auth/login');
+        })
+        localStorage.removeItem('token')
+        localStorage.removeItem('id')
+        localStorage.removeItem('user_name')
+        localStorage.removeItem('user_role')
+        toast.success('Logout Successful!')
+        mobileOpen.value = false
+        desktopDropdown.value = ''
+        router.push('/auth/login')
     } catch (error) {
         console.log(error)
-        toast.error('Logout Failed!.')
+        toast.error('Logout Failed!')
     } finally {
-        loggingOut.value = false;
-        desktopDropdown.value = '';
+        loggingOut.value = false
     }
-};
+}
 
-const isRoute = (comparison) => route.path === comparison;
-const isActiveHome = computed(() => route.path === '/');
-const isActiveShop = computed(() => route.path.startsWith('/shop'));
-const isActivePhones = computed(() => route.path.startsWith('/phones'));
-const isActiveAccessories = computed(() => route.path.startsWith('/accessories'));
-const isActiveElectronics = computed(() => route.path.startsWith('/electronics'));
-const isActiveNetworking = computed(() => route.path.startsWith('/networking'));
-const isActiveDeals = computed(() => route.path.startsWith('/deals'));
-const isActiveWholesale = computed(() => route.path.startsWith('/wholesale'));
+const isRoute = (comparison) => route.path === comparison
+const isActiveHome = computed(() => route.path === '/')
+const isActiveShop = computed(() => route.path.startsWith('/shop'))
+const isActivePhones = computed(() => route.path.startsWith('/phones'))
+const isActiveAccessories = computed(() => route.path.startsWith('/accessories'))
+const isActiveElectronics = computed(() => route.path.startsWith('/electronics'))
+const isActiveNetworking = computed(() => route.path.startsWith('/networking'))
+const isActiveDeals = computed(() => route.path.startsWith('/deals'))
+const isActiveWholesale = computed(() => route.path.startsWith('/wholesale'))
 </script>
 
 <style scoped>
@@ -522,5 +549,25 @@ const isActiveWholesale = computed(() => route.path.startsWith('/wholesale'));
 .slide-enter-active,
 .slide-leave-active {
     transition: all 0.3s ease;
+}
+
+/* Custom scrollbar for mobile menu */
+@media (max-width: 1023px) {
+    .lg\:hidden::-webkit-scrollbar {
+        width: 4px;
+    }
+
+    .lg\:hidden::-webkit-scrollbar-track {
+        background: #f1f1f1;
+    }
+
+    .lg\:hidden::-webkit-scrollbar-thumb {
+        background: #888;
+        border-radius: 2px;
+    }
+
+    .lg\:hidden::-webkit-scrollbar-thumb:hover {
+        background: #555;
+    }
 }
 </style>

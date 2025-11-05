@@ -1,11 +1,12 @@
 <template>
     <div class="w-full overflow-hidden relative h-[500px]">
-        <div class="w-full h-full">
-            <div class="flex h-full" :class="{ 'transition-transform duration-700 ease-in-out': isTransitioning }"
+        <div ref="containerRef" class="w-full h-full overflow-hidden">
+            <div ref="sliderRef" class="flex h-full"
+                :class="{ 'transition-transform duration-700 ease-in-out': isTransitioning }"
                 :style="{ transform: `translateX(-${currentSlide * 100}%)` }">
                 <!-- Render images with duplicates for seamless infinite loop -->
                 <div v-for="(banner, index) in displayBanners" :key="index"
-                    class="min-w-full h-full relative flex-shrink-0">
+                    class="w-full h-full relative flex-shrink-0">
                     <img :src="banner.image" :alt="banner.alt" class="w-full h-full object-cover" />
 
                     <!-- Text overlay with dynamic positioning -->
@@ -103,6 +104,8 @@ const banners = [
 
 const currentSlide = ref(0);
 const isTransitioning = ref(true);
+const containerRef = ref(null);
+const sliderRef = ref(null);
 let intervalId = null;
 
 // Add banners twice for seamless infinite loop to the RIGHT only
@@ -180,32 +183,115 @@ onUnmounted(() => {
 </script>
 
 <style scoped>
-/* Mobile responsive styles */
-@media (max-width: 768px) {
+/* Tablet styles */
+@media (max-width: 1024px) {
     .h-\[500px\] {
-        height: 300px;
+        height: 400px;
     }
 
     h2 {
-        font-size: 2rem;
-    }
-
-    p {
-        font-size: 1rem;
+        font-size: 2.5rem;
     }
 
     .max-w-\[600px\] {
-        max-width: 400px;
+        max-width: 500px;
+    }
+}
+
+/* Mobile styles */
+@media (max-width: 768px) {
+    .h-\[500px\] {
+        height: 350px;
     }
 
-    button[aria-label] {
-        width: 40px;
-        height: 40px;
+    .absolute.p-5 {
+        padding: 1rem;
+        max-width: 90% !important;
     }
 
-    button[aria-label] svg {
-        width: 20px;
-        height: 20px;
+    h2 {
+        font-size: 1.75rem !important;
+        margin-bottom: 0.5rem !important;
+        line-height: 1.2;
+    }
+
+    p.text-2xl {
+        font-size: 1.125rem !important;
+        margin-bottom: 0.5rem !important;
+    }
+
+    p.text-lg {
+        font-size: 0.875rem !important;
+        margin-bottom: 1rem !important;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    .inline-block {
+        padding: 0.625rem 1.5rem !important;
+        font-size: 0.875rem !important;
+    }
+
+    /* Navigation arrows - smaller and closer to edges */
+    button.absolute.left-4,
+    button.absolute.right-4 {
+        width: 36px !important;
+        height: 36px !important;
+    }
+
+    button.absolute.left-4 {
+        left: 0.5rem !important;
+    }
+
+    button.absolute.right-4 {
+        right: 0.5rem !important;
+    }
+
+    button svg {
+        width: 18px !important;
+        height: 18px !important;
+    }
+
+    /* Navigation dots - smaller */
+    .absolute.bottom-5 {
+        bottom: 1rem !important;
+    }
+
+    .absolute.bottom-5 button {
+        width: 6px !important;
+        height: 6px !important;
+    }
+
+    .absolute.bottom-5 button.bg-white.w-8 {
+        width: 20px !important;
+        height: 6px !important;
+    }
+}
+
+/* Small mobile styles */
+@media (max-width: 480px) {
+    .h-\[500px\] {
+        height: 280px;
+    }
+
+    h2 {
+        font-size: 1.5rem !important;
+    }
+
+    p.text-2xl {
+        font-size: 1rem !important;
+    }
+
+    p.text-lg {
+        font-size: 0.8rem !important;
+        -webkit-line-clamp: 1;
+    }
+
+    .inline-block {
+        padding: 0.5rem 1.25rem !important;
+        font-size: 0.8rem !important;
     }
 }
 </style>

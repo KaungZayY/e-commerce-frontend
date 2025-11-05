@@ -1,62 +1,68 @@
 <template>
     <div class="bg-gray-50 min-h-screen">
-        <div class="max-w-7xl mx-auto px-6 py-8">
-            <BreadCrumb :items="breadcrumbItems" class="mb-6" />
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 py-4 sm:py-8">
+            <BreadCrumb :items="breadcrumbItems" class="mb-4 sm:mb-6" />
 
-            <div class="flex gap-8 bg-white p-8 rounded-lg shadow-sm">
+            <div class="flex flex-col lg:flex-row gap-4 sm:gap-8 bg-white p-4 sm:p-8 rounded-lg shadow-sm">
                 <!-- Left: Image Slider -->
-                <div class="w-1/2">
+                <div class="w-full lg:w-1/2">
                     <ImageSlider :images="images" />
                 </div>
 
                 <!-- Right: Product Information -->
-                <div class="w-1/2 ">
+                <div class="w-full lg:w-1/2">
                     <!-- Product Title -->
-                    <h1 class="text-3xl font-bold text-gray-900 mb-4">
+                    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-3 sm:mb-4">
                         {{ product_name }}
                     </h1>
 
                     <!-- Price -->
-                    <div class="mb-6">
+                    <div class="mb-4 sm:mb-6">
                         <div v-if="hasDiscount" class="space-y-2">
-                            <div class="flex items-center gap-3">
-                                <span class="text-4xl font-bold text-blue-600">RM{{ formatPrice(finalPrice) }}</span>
-                                <span class="bg-blue-100 text-blue-600 px-3 py-1 rounded-full text-sm font-bold">
+                            <div class="flex items-center gap-2 sm:gap-3 flex-wrap">
+                                <span class="text-3xl sm:text-4xl font-bold text-blue-600">RM{{ formatPrice(finalPrice)
+                                    }}</span>
+                                <span
+                                    class="bg-blue-100 text-blue-600 px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm font-bold">
                                     {{ discountLabel }}
                                 </span>
                             </div>
                             <div class="flex items-center gap-2">
-                                <span class="text-xl text-gray-400 line-through">RM{{ formatPrice(price) }}</span>
-                                <span class="text-green-600 font-semibold text-sm">
+                                <span class="text-lg sm:text-xl text-gray-400 line-through">RM{{ formatPrice(price)
+                                    }}</span>
+                                <span class="text-green-600 font-semibold text-xs sm:text-sm">
                                     You save RM{{ formatPrice(discountValue) }}
                                 </span>
                             </div>
                         </div>
                         <div v-else>
-                            <span class="text-4xl font-bold text-blue-600">RM{{ formatPrice(price) }}</span>
+                            <span class="text-3xl sm:text-4xl font-bold text-blue-600">RM{{ formatPrice(price) }}</span>
                         </div>
                     </div>
 
                     <!-- Stock Status -->
                     <div v-if="stockQty > 0" class="mb-4 flex items-center gap-2">
                         <span class="inline-block w-2 h-2 bg-green-500 rounded-full"></span>
-                        <span class="text-green-600 font-medium">In Stock</span><span
-                            class="text-blue-600 font-medium ml-4">{{ stockQty }} available</span>
+                        <span class="text-green-600 font-medium text-sm sm:text-base">In Stock</span><span
+                            class="text-blue-600 font-medium ml-4 text-sm sm:text-base">{{ stockQty }} available</span>
                     </div>
 
                     <!-- Quantity Selector & Buttons -->
-                    <div class="space-y-3 mb-6">
-                        <div v-if="category_id !== 21 && category_id !== 22" class="flex items-center gap-2">
-                            <span class="text-gray-700 font-medium min-w-[80px]">Quantity:</span>
-                            <div class="flex items-center border-2 border-gray-300 rounded-lg overflow-hidden">
+                    <div class="space-y-3 mb-4 sm:mb-6">
+                        <div v-if="category_id !== 21 && category_id !== 22"
+                            class="flex flex-col sm:flex-row items-start sm:items-center gap-2">
+                            <span class="text-gray-700 font-medium text-sm sm:text-base">Quantity:</span>
+                            <div class="flex items-center border border-gray-300 rounded-lg overflow-hidden">
                                 <button @click="decreaseQty"
-                                    class="px-4 py-2 text-xl text-gray-700 hover:bg-gray-100 transition font-semibold">
-                                    -
+                                    class="w-10 h-10 flex items-center justify-center text-gray-700 hover:bg-gray-100 active:bg-gray-200 transition font-semibold text-lg"
+                                    :class="{ 'opacity-50 cursor-not-allowed': quantity <= 1 }"
+                                    :disabled="quantity <= 1">
+                                    −
                                 </button>
                                 <input v-model.number="quantity" type="number" min="1"
-                                    class="w-16 text-center border-x-2 border-gray-300 py-2 focus:outline-none font-semibold text-gray-900" />
+                                    class="w-16 h-10 text-center border-x border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 font-semibold text-gray-900" />
                                 <button @click="increaseQty"
-                                    class="px-4 py-2 text-xl text-gray-700 hover:bg-gray-100 transition font-semibold">
+                                    class="w-10 h-10 flex items-center justify-center text-gray-700 hover:bg-gray-100 active:bg-gray-200 transition font-semibold text-lg">
                                     +
                                 </button>
                             </div>
@@ -66,15 +72,15 @@
                                 :error="quantity_error ? quantity_error : ''" />
                         </div>
 
-                        <div class="flex gap-3">
+                        <div class="flex flex-col sm:flex-row gap-3">
                             <button @click="handleAddToCart"
-                                class="flex-1 bg-gradient-to-r from-blue-600 to-blue-700 text-white font-bold py-3.5 px-6 rounded-lg hover:from-blue-700 hover:to-blue-800 transition-all shadow-md hover:shadow-lg uppercase text-sm tracking-wide">
+                                class="flex-1 bg-gradient-to-r from-blue-600 to-blue-700 text-white font-bold py-3 sm:py-3.5 px-4 sm:px-6 rounded-lg hover:from-blue-700 hover:to-blue-800 transition-all shadow-md hover:shadow-lg uppercase text-xs sm:text-sm tracking-wide">
                                 <i class="pi pi-shopping-cart mr-2"></i>
                                 ADD TO CART
                             </button>
 
                             <button @click="buyNow"
-                                class="flex-1 bg-gradient-to-r from-gray-900 to-gray-800 text-white font-bold py-3.5 px-6 rounded-lg hover:from-gray-800 hover:to-gray-700 transition-all shadow-md hover:shadow-lg uppercase text-sm tracking-wide">
+                                class="flex-1 bg-gradient-to-r from-gray-900 to-gray-800 text-white font-bold py-3 sm:py-3.5 px-4 sm:px-6 rounded-lg hover:from-gray-800 hover:to-gray-700 transition-all shadow-md hover:shadow-lg uppercase text-xs sm:text-sm tracking-wide">
                                 <i class="pi pi-bolt mr-2"></i>
                                 BUY NOW
                             </button>
@@ -82,40 +88,40 @@
                     </div>
 
                     <!-- Wishlist -->
-                    <div class="mb-6 pb-6 border-b border-gray-200">
+                    <div class="mb-4 sm:mb-6 pb-4 sm:pb-6 border-b border-gray-200">
                         <button @click="toggleWishlist" class="flex items-center gap-2 transition group"
                             :class="is_favorite ? 'text-red-600' : 'text-gray-700 hover:text-red-600'">
-                            <i class="text-xl transition-transform"
+                            <i class="text-lg sm:text-xl transition-transform"
                                 :class="is_favorite ? 'pi pi-heart-fill' : 'pi pi-heart group-hover:scale-110'"></i>
-                            <span class="font-medium">
+                            <span class="font-medium text-sm sm:text-base">
                                 {{ is_favorite ? 'Remove from Wishlist' : 'Add to Wishlist' }}
                             </span>
                         </button>
                     </div>
 
                     <!-- Share Section -->
-                    <div class="flex items-center gap-4">
-                        <span class="text-gray-800 font-semibold">Share:</span>
-                        <div class="flex gap-2">
+                    <div class="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4">
+                        <span class="text-gray-800 font-semibold text-sm sm:text-base">Share:</span>
+                        <div class="flex gap-2 flex-wrap">
                             <button
-                                class="text-gray-600 hover:text-blue-600 transition p-2.5 hover:bg-blue-50 rounded-full">
-                                <i class="pi pi-facebook text-lg"></i>
+                                class="text-gray-600 hover:text-blue-600 transition p-2 sm:p-2.5 hover:bg-blue-50 rounded-full">
+                                <i class="pi pi-facebook text-base sm:text-lg"></i>
                             </button>
                             <button
-                                class="text-gray-600 hover:text-blue-400 transition p-2.5 hover:bg-blue-50 rounded-full">
-                                <i class="pi pi-twitter text-lg"></i>
+                                class="text-gray-600 hover:text-blue-400 transition p-2 sm:p-2.5 hover:bg-blue-50 rounded-full">
+                                <i class="pi pi-twitter text-base sm:text-lg"></i>
                             </button>
                             <button
-                                class="text-gray-600 hover:text-red-600 transition p-2.5 hover:bg-red-50 rounded-full">
-                                <i class="pi pi-pinterest text-lg"></i>
+                                class="text-gray-600 hover:text-red-600 transition p-2 sm:p-2.5 hover:bg-red-50 rounded-full">
+                                <i class="pi pi-pinterest text-base sm:text-lg"></i>
                             </button>
                             <button
-                                class="text-gray-600 hover:text-blue-700 transition p-2.5 hover:bg-blue-50 rounded-full">
-                                <i class="pi pi-linkedin text-lg"></i>
+                                class="text-gray-600 hover:text-blue-700 transition p-2 sm:p-2.5 hover:bg-blue-50 rounded-full">
+                                <i class="pi pi-linkedin text-base sm:text-lg"></i>
                             </button>
                             <button
-                                class="text-gray-600 hover:text-green-600 transition p-2.5 hover:bg-green-50 rounded-full">
-                                <i class="pi pi-whatsapp text-lg"></i>
+                                class="text-gray-600 hover:text-green-600 transition p-2 sm:p-2.5 hover:bg-green-50 rounded-full">
+                                <i class="pi pi-whatsapp text-base sm:text-lg"></i>
                             </button>
                         </div>
                     </div>
@@ -123,20 +129,20 @@
             </div>
 
             <!-- Description Section -->
-            <div class="mt-8">
-                <h2 class="text-2xl font-bold text-gray-900 mb-4">Product Description</h2>
-                <div class="[&_ul]:list-disc [&_ul]:pl-6 [&_li]:mb-1" v-html="description"></div>
+            <div class="mt-6 sm:mt-8">
+                <h2 class="text-xl sm:text-2xl font-bold text-gray-900 mb-3 sm:mb-4">Product Description</h2>
+                <div class="[&_ul]:list-disc [&_ul]:pl-6 [&_li]:mb-1 text-sm sm:text-base" v-html="description"></div>
 
             </div>
 
-            <div class="flex gap-8">
-                <div class="w-1/2">
-                    <ProductsReviews :key="reviewsKey" :product_id="Number(route.params.id)" class="mt-8"
+            <div class="flex flex-col lg:flex-row gap-4 sm:gap-8">
+                <div class="w-full lg:w-1/2">
+                    <ProductsReviews :key="reviewsKey" :product_id="Number(route.params.id)" class="mt-6 sm:mt-8"
                         @edit="editReview" />
                 </div>
-                <div class="w-1/2">
+                <div class="w-full lg:w-1/2">
                     <ProductsReviewForm :key="formKey" :product_id="Number(route.params.id)" :id="selectedId"
-                        class="mt-8" @success="onReviewSuccess" @cancel="cancelEdit" />
+                        class="mt-6 sm:mt-8" @success="onReviewSuccess" @cancel="cancelEdit" />
                 </div>
             </div>
 
@@ -324,7 +330,7 @@ const handleAddToCart = () => {
         return // stop execution
     }
 
-    if(stockQty.value > 0 && quantity.value > stockQty.value) {
+    if (stockQty.value > 0 && quantity.value > stockQty.value) {
         quantity_error.value = `Only ${stockQty.value} unit(s) available in stock.`
         toast.error(`You can only add up to ${stockQty.value} unit(s) to cart.`)
         return
@@ -354,7 +360,7 @@ const buyNow = () => {
         return // stop execution
     }
 
-    if(stockQty.value > 0 && quantity.value > stockQty.value) {
+    if (stockQty.value > 0 && quantity.value > stockQty.value) {
         quantity_error.value = `Only ${stockQty.value} unit(s) available in stock.`
         toast.error(`You can only add up to ${stockQty.value} unit(s) to cart.`)
         return

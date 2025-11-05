@@ -1,28 +1,53 @@
 <template>
-    <div class="flex px-40 py-8 gap-2">
-        <!-- Sidebar Filters (optional) -->
-        <div class="w-1/5 mt-12" v-if="showPriceFilter">
-            <PriceRangeFilter min="0" max="5000"
-                @filter="handleFilter" />
+    <div class="px-4 sm:px-8 md:px-20 lg:px-40 py-8">
+        <!-- Breadcrumb -->
+        <div class="mb-6">
+            <BreadCrumb :items="breadcrumbItems" />
         </div>
 
-        <!-- Main Product Area -->
-        <div :class="showPriceFilter ? 'w-4/5' : 'w-full'">
-            <div class="flex justify-between items-center mb-4">
-                <BreadCrumb :items="breadcrumbItems" />
-                <div class="flex items-center space-x-4">
-                    <ProductSort v-model="selectedSort" @sort-change="fetchData" />
-                    <Pagination :current-page="currentPage" :total-pages="totalPages" @change-page="goToPage" />
-                </div>
+        <!-- Top Controls (Desktop only) -->
+        <div class="hidden lg:flex justify-between items-center mb-6">
+            <div class="flex items-center space-x-4">
+                <ProductSort v-model="selectedSort" @sort-change="fetchData" />
+            </div>
+            <Pagination :current-page="currentPage" :total-pages="totalPages" @change-page="goToPage" />
+        </div>
+
+        <!-- MOBILE & TABLET: Price Filter Centered on top -->
+        <div v-if="showPriceFilter" class="block lg:hidden mb-6 flex justify-center">
+            <PriceRangeFilter class="max-w-md w-full" min="0" max="5000" @filter="handleFilter" />
+        </div>
+
+        <!-- MAIN WRAPPER -->
+        <div class="flex flex-col lg:flex-row gap-6">
+            <!-- DESKTOP SIDEBAR -->
+            <div v-if="showPriceFilter" class="hidden lg:block lg:w-1/5 mt-4 lg:mt-12">
+                <PriceRangeFilter min="0" max="5000" @filter="handleFilter" />
             </div>
 
-            <Spinner v-if="loading" />
-            <div v-else-if="products.length === 0">
-                <p class="text-gray-600">No products found.</p>
-            </div>
-            <div v-else>
-                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-                    <ProductCard v-for="product in products" :key="product.id" :product="product" />
+            <!-- PRODUCT AREA -->
+            <div :class="showPriceFilter ? 'w-full lg:w-4/5' : 'w-full'">
+                <Spinner v-if="loading" />
+
+                <div v-else-if="products.length === 0" class="text-center text-gray-600">
+                    No products found.
+                </div>
+
+                <div v-else>
+                    <!-- Product Grid -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                        <ProductCard v-for="product in products" :key="product.id" :product="product" />
+                    </div>
+
+                    <!-- Pagination (for mobile & tablet) -->
+                    <div class="flex justify-center mt-8 lg:hidden">
+                        <Pagination :current-page="currentPage" :total-pages="totalPages" @change-page="goToPage" />
+                    </div>
+
+                    <!-- Pagination (for desktop bottom) -->
+                    <div class="hidden lg:flex justify-center mt-8">
+                        <Pagination :current-page="currentPage" :total-pages="totalPages" @change-page="goToPage" />
+                    </div>
                 </div>
             </div>
         </div>
@@ -30,7 +55,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { toast } from 'vue-sonner'
 
 const props = defineProps({
@@ -43,7 +68,7 @@ const props = defineProps({
             sort: 'created_at_desc'
         })
     },
-    breadcrumbItems: { // ✅ New prop
+    breadcrumbItems: {
         type: Array,
         default: () => []
     },
@@ -58,21 +83,34 @@ const selectedSort = ref(props.filter.sort || 'created_at_desc')
 const totalItems = ref(0)
 const totalPages = computed(() => Math.ceil(totalItems.value / pageSize.value))
 
-// --- Fetch Products ---
+// --- Detect screen size for pagination size ---
+const checkScreenSize = () => {
+    const width = window.innerWidth
+    if (width < 1024) {
+        // mobile & tablet
+        pageSize.value = 6
+    } else {
+        pageSize.value = 12
+    }
+}
+
+// --- Fetch products ---
 const fetchData = async () => {
     loading.value = true
     try {
         const baseParams = {
             perPage: pageSize.value,
             page: currentPage.value,
-            sort: selectedSort.value || props.filter.sort || 'created_at_desc',
+            sort: selectedSort.value || props.filter.sort || 'created_at_desc'
         }
 
-        // Build dynamic params based on props.filter
         const extraParams = {}
 
         // Price range
-        if (props.filter.price_range?.start != null && props.filter.price_range?.end != null) {
+        if (
+            props.filter.price_range?.start != null &&
+            props.filter.price_range?.end != null
+        ) {
             extraParams['price_range[start]'] = props.filter.price_range.start
             extraParams['price_range[end]'] = props.filter.price_range.end
         }
@@ -82,7 +120,7 @@ const fetchData = async () => {
         if (props.filter.stock?.inStock) extraParams.in_stock = 1
         if (props.filter.stock?.onBackorder) extraParams.on_backorder = 1
 
-        // Add any other filters (like category_id, is_popular, etc.)
+        // Other filters
         for (const [key, value] of Object.entries(props.filter)) {
             if (!['price_range', 'stock', 'sort'].includes(key) && value != null) {
                 extraParams[key] = value
@@ -97,9 +135,10 @@ const fetchData = async () => {
         products.value = response.products.data.map((item) => ({
             id: item.id,
             images: item.images,
-            product_image: item.images && item.images.length > 0
-                ? `${config.public.apiBase}/${item.images[0]}`
-                : null,
+            product_image:
+                item.images && item.images.length > 0
+                    ? `${config.public.apiBase}/${item.images[0]}`
+                    : null,
             product_name: item.product_name,
             price: item.price,
             qty: item.qty,
@@ -134,7 +173,40 @@ const goToPage = (page) => {
     }
 }
 
+// --- Lifecycle ---
 onMounted(() => {
+    checkScreenSize()
     fetchData()
+    window.addEventListener('resize', checkScreenSize)
+})
+
+onUnmounted(() => {
+    window.removeEventListener('resize', checkScreenSize)
 })
 </script>
+
+<style scoped>
+/* 📱 Tablet & Mobile Styling */
+@media (max-width: 1024px) {
+    .price-filter {
+        margin: 0 auto;
+        max-width: 28rem;
+    }
+
+    .breadcrumb {
+        margin-bottom: 1rem;
+    }
+
+    /* 2 products per row for tablet (≥640px <1024px) */
+    .grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    /* 1 per row for mobile (<640px) */
+    @media (max-width: 640px) {
+        .grid {
+            grid-template-columns: repeat(1, minmax(0, 1fr));
+        }
+    }
+}
+</style>

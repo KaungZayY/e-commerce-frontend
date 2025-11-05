@@ -1,7 +1,7 @@
 <template>
-    <div class="min-h-screen bg-gray-50 flex items-center justify-center p-6">
-        <div class="w-full max-w-3xl bg-white p-6 rounded shadow">
-            <div class="relative mb-6 flex items-center justify-center">
+    <div class="min-h-screen bg-gray-50 flex items-center justify-center p-3 sm:p-6">
+        <div class="w-full max-w-3xl bg-white p-4 sm:p-6 rounded shadow">
+            <div class="relative mb-4 sm:mb-6 flex items-center justify-center">
                 <LoadingBtn icon="arrow-left" variant="neutral" type="button" class="absolute left-0 w-auto"
                     @click="goBack" />
                 <PageTitle v-if="!props.id" label="Add New Product" />
@@ -9,20 +9,20 @@
             </div>
 
             <Spinner v-if="spinner" />
-            <form v-else @submit.prevent="submit" class="space-y-4">
-                <div class="flex gap-3">
+            <form v-else @submit.prevent="submit" class="space-y-3 sm:space-y-4">
+                <div class="flex flex-col sm:flex-row gap-3">
                     <Textbox id="product_name" label="Product Name" placeholder="Mobile Phone" v-model="product_name"
                         :required="true" :error="errors.product_name ? errors.product_name[0] : ''" />
                     <Textbox id="price" :label="priceLabel" type="number" placeholder="" v-model="price"
                         :required="true" :error="errors.price ? errors.price[0] : ''" />
                 </div>
-                <div class="flex gap-3">
+                <div class="flex flex-col sm:flex-row gap-3">
                     <Textbox id="qty" label="Quantity" type="number" placeholder="" v-model="qty" :required="true"
                         :error="errors.qty ? errors.qty[0] : ''" />
                     <CheckBox id="is_popular" label="Popular Product" v-model="is_popular"
                         :error="errors.is_popular ? errors.is_popular[0] : ''" />
                 </div>
-                <div class="flex gap-3">
+                <div class="flex flex-col sm:flex-row gap-3">
                     <SelectBox v-model="discount_type" :dataOptions="currency_statuses" label="Discount "
                         id="discount_type" placeholder="Select Discount Type"
                         :error="errors.discount_type ? errors.discount_type[0] : ''" />
@@ -31,7 +31,7 @@
                         :unit="discount_type === 'percentage' ? '%' : discount_type === 'amount' ? 'RM' : null"
                         :error="errors.discount_amount ? errors.discount_amount[0] : ''" />
                 </div>
-                <div class="flex gap-3">
+                <div class="flex flex-col sm:flex-row gap-3">
                     <SelectBox v-model="parent_category_id" :dataOptions="categories" label="Category"
                         id="parent_category_id" placeholder="Select Category" optionLabel="category_name"
                         optionValue="id" :error="errors.parent_category_id ? errors.parent_category_id[0] : ''" />
@@ -54,11 +54,11 @@
                         :error="errors.description ? errors.description[0] : ''" />
                 </div>
 
-                <div class="w-full flex justify-end">
-                    <div class="w-20">
-                        <LoadingBtn v-if="!props.id" :label="'Add'" :loading-label="'adding product...'" :loading="loading"
+                <div class="w-full flex justify-end pt-2">
+                    <div class="w-full sm:w-auto sm:min-w-[120px]">
+                        <LoadingBtn v-if="!props.id" :label="'Add'" :loading-label="'Adding...'" :loading="loading"
                             type="submit" />
-                        <LoadingBtn v-else :label="'Update'" :loading-label="'updating product...'" :loading="loading"
+                        <LoadingBtn v-else :label="'Update'" :loading-label="'Updating...'" :loading="loading"
                             type="submit" />
                     </div>
                 </div>
@@ -82,10 +82,10 @@ const goBack = () => {
 };
 
 const props = defineProps({
-    id: { 
-        type: Number, 
-        required: false, 
-        default: null 
+    id: {
+        type: Number,
+        required: false,
+        default: null
     }
 })
 
@@ -166,7 +166,7 @@ const create = async () => {
 }
 
 const update = async () => {
-    if(!props.id) return;
+    if (!props.id) return;
     loading.value = true
     errors.value = {}
     const payload = {
@@ -207,7 +207,7 @@ onMounted(() => {
 })
 
 const fetchData = async () => {
-    if(!props.id) return;
+    if (!props.id) return;
     spinner.value = true;
     try {
         const response = await useApi(`/products/${props.id}`);

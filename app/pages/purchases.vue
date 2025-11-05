@@ -15,9 +15,10 @@
             </div>
             <h2 class="text-xl font-semibold text-gray-700 mb-1">No orders yet</h2>
             <p class="text-gray-500 mb-5">Start shopping to see your orders here</p>
-            <button class="bg-blue-600 text-white px-5 py-2 rounded-md hover:bg-blue-700 transition">
+            <NuxtLink to="/"
+                class="inline-block bg-blue-600 text-white px-5 py-2 rounded-md hover:bg-blue-700 transition">
                 Start Shopping
-            </button>
+            </NuxtLink>
         </div>
 
         <!-- Orders -->
@@ -57,10 +58,10 @@
                                 <div class="flex items-center gap-2 mt-1.5">
                                     <span class="text-sm font-medium text-gray-900">${{
                                         product.pivot.final_unit_price.toFixed(2)
-                                        }}</span>
+                                    }}</span>
                                     <span v-if="hasDiscount(product)" class="text-sm text-gray-400 line-through">${{
                                         parseFloat(product.price).toFixed(2)
-                                        }}</span>
+                                    }}</span>
                                     <span v-if="hasDiscount(product)"
                                         class="text-xs bg-red-100 text-red-700 px-1.5 py-0.5 rounded">
                                         {{ getDiscountLabel(product) }}
