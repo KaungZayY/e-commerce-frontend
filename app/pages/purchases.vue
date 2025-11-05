@@ -88,7 +88,7 @@
                     <div class="flex items-center gap-2">
                         <i class="pi pi-money-bill text-green-600 text-sm sm:text-base"></i>
                         <span class="font-medium text-gray-700 text-sm sm:text-base">Payment Method:</span>
-                        <span class="text-green-700 font-semibold text-sm sm:text-base">Pay by Cash</span>
+                        <span class="text-green-700 font-semibold text-sm sm:text-base">Cash</span>
                     </div>
                 </div>
 
