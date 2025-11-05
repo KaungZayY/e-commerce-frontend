@@ -26,21 +26,26 @@
             <div v-for="order in orders" :key="order.id"
                 class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
                 <!-- Header -->
-                <div
-                    class="bg-gray-50 px-3 sm:px-5 py-3 border-b border-gray-200 flex flex-wrap justify-between items-center gap-2 sm:gap-3">
-                    <div>
-                        <h3 class="font-semibold text-gray-800 text-base sm:text-lg">Order {{ order.generated_id }}</h3>
-                        <p class="text-xs sm:text-sm text-gray-500">{{ formatDate(order.created_at) }}</p>
-                    </div>
-                    <div class="flex items-center gap-2 sm:gap-4 flex-wrap">
-                        <span :class="getStatusClass(order.status)"
-                            class="px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm font-medium capitalize">
-                            {{ order.status }}
-                        </span>
-                        <div class="text-right">
-                            <p class="text-xs text-gray-500">Total</p>
-                            <p class="text-base sm:text-lg font-bold text-gray-900">RM{{ order.total_amount.toFixed(2)
-                                }}</p>
+                <div class="bg-gray-50 px-3 sm:px-5 py-3 border-b border-gray-200">
+                    <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
+                        <!-- Left: Order ID and Date -->
+                        <div class="flex-1">
+                            <h3 class="font-semibold text-gray-800 text-base sm:text-lg">Order {{ order.generated_id }}
+                            </h3>
+                            <p class="text-xs sm:text-sm text-gray-500">{{ formatDate(order.created_at) }}</p>
+                        </div>
+
+                        <!-- Right: Status and Total (side by side on mobile) -->
+                        <div class="flex items-center justify-between sm:justify-end gap-3 sm:gap-4">
+                            <span :class="getStatusClass(order.status)"
+                                class="px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm font-medium capitalize">
+                                {{ order.status }}
+                            </span>
+                            <div class="text-right">
+                                <p class="text-xs text-gray-500">Total</p>
+                                <p class="text-base sm:text-lg font-bold text-gray-900 whitespace-nowrap">RM{{
+                                    order.total_amount.toFixed(2) }}</p>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -60,7 +65,7 @@
                                 <div class="flex items-center gap-2 mt-1.5 flex-wrap">
                                     <span class="text-sm font-medium text-gray-900">RM{{
                                         product.pivot.final_unit_price.toFixed(2)
-                                        }}</span>
+                                    }}</span>
                                     <span v-if="hasDiscount(product)"
                                         class="text-xs sm:text-sm text-gray-400 line-through">RM{{
                                             parseFloat(product.price).toFixed(2)
