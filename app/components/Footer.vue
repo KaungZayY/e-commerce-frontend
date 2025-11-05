@@ -9,10 +9,30 @@
 
             <!-- Navigation Links -->
             <nav class="flex flex-wrap items-center justify-center gap-3 sm:gap-5 text-white text-sm font-medium">
-                <a href="#" class="hover:text-blue-400 transition-colors">CONTACT US</a>
-                <a href="#" class="hover:text-blue-400 transition-colors">REFUND & RETURNS POLICY</a>
-                <a href="#" class="hover:text-blue-400 transition-colors">TERMS & CONDITIONS</a>
-                <a href="#" class="hover:text-blue-400 transition-colors">PRIVACY POLICY</a>
+                <NuxtLink to="/contact-us" :class="[
+                    'hover:text-blue-400 transition-colors',
+                    route.path === '/contact-us' ? 'text-gray-400' : ''
+                ]">
+                    CONTACT US
+                </NuxtLink>
+                <NuxtLink to="/refund-and-returns-policy" :class="[
+                    'hover:text-blue-400 transition-colors',
+                    route.path === '/refund-and-returns-policy' ? 'text-gray-400' : ''
+                ]">
+                    REFUND & RETURNS POLICY
+                </NuxtLink>
+                <NuxtLink to="/terms-and-conditions" :class="[
+                    'hover:text-blue-400 transition-colors',
+                    route.path === '/terms-and-conditions' ? 'text-gray-400' : ''
+                ]">
+                    TERMS & CONDITIONS
+                </NuxtLink>
+                <NuxtLink to="/privacy-policy" :class="[
+                    'hover:text-blue-400 transition-colors',
+                    route.path === '/privacy-policy' ? 'text-gray-400' : ''
+                ]">
+                    PRIVACY POLICY
+                </NuxtLink>
             </nav>
 
             <!-- Year Text -->
@@ -22,6 +42,10 @@
         </div>
     </footer>
 </template>
+
+<script setup>
+const route = useRoute();
+</script>
 
 <style scoped>
 /* 📱 Mobile */
