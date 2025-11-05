@@ -107,9 +107,6 @@
                                     <i class="pi pi-credit-card text-gray-400 text-sm sm:text-base"></i>
                                     <span class="font-medium text-gray-500 text-sm sm:text-base">Credit Card
                                         Payment</span>
-                                    <span
-                                        class="text-xs bg-gray-200 text-gray-600 px-1.5 sm:px-2 py-0.5 rounded-full whitespace-nowrap">Coming
-                                        Soon</span>
                                 </div>
                                 <p class="text-xs sm:text-sm text-gray-500 mt-0.5 sm:mt-1">Currently unavailable</p>
                             </div>
@@ -124,9 +121,6 @@
                                 <div class="flex items-center gap-1.5 sm:gap-2 flex-wrap">
                                     <i class="pi pi-building text-gray-400 text-sm sm:text-base"></i>
                                     <span class="font-medium text-gray-500 text-sm sm:text-base">Online Banking</span>
-                                    <span
-                                        class="text-xs bg-gray-200 text-gray-600 px-1.5 sm:px-2 py-0.5 rounded-full whitespace-nowrap">Coming
-                                        Soon</span>
                                 </div>
                                 <p class="text-xs sm:text-sm text-gray-500 mt-0.5 sm:mt-1">Currently unavailable</p>
                             </div>
